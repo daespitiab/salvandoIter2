@@ -1,0 +1,27 @@
+{
+	"title": "Nombres de las tablas de Parranderos Uniandes para la aplicación B",
+	"unidadPersistencia": "HotelAndes",
+	"tablas":
+	[
+		"hoteles_sequence",
+		"H_ACOMPANANTES",
+		"H_CLIENTES",
+		"H_CUENTAS",
+		"H_EMPLEADOS",
+		"H_GIMNASIOS",
+		"H_HABITACIONES",
+		"H_HOTELES",
+		"H_OCUPAN",
+		"H_OFRECEN",
+		"H_PISCINAS",
+		"H_PLANES",
+		"H_PRODUCTOS_INSTALACIONES",
+		"H_RESERVACIONES_HOTEL",
+		"H_RESTAURANTES_BAR",
+		"H_SERVICIOS_HOTEL",
+		"H_SPAS",
+		"H_SUPERMERCADOS_TIENDAS"
+	
+		
+	]
+}

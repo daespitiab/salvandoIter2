@@ -1,0 +1,115 @@
+{
+	"title": "Aplicación transaccional de HotelAndes",
+	"frameH": 600,
+	"frameW": 800,
+	"bannerPath": "./src/main/resources/config/logo.png",
+	"menuBar":
+	[
+		{ "menuTitle": "Roles de Usuario",
+		  "options":
+			[
+				{
+					"label": "Adicionar",
+					"event": "adicionarRolDeUsuario"
+				},
+				{
+					"label": "Listar",
+					"event": "listarRolDeUsuario"
+				},
+				{
+					"label": "Borrar por Id",
+					"event": "eliminarRolDeUsuario"
+				},
+				{
+					"label": "Buscar por Nombre",
+					"event": "buscarRolDeUsuario"
+				}
+			]
+		},
+		{ "menuTitle": "Mantenimiento",
+		  "options":
+			[
+				{
+					"label": "Mostrar log HotelAndes",
+					"event": "mostrarLogParranderos"
+				},
+				{
+					"label": "Mostrar log datanucleus",
+					"event": "mostrarLogDatanuecleus"
+				},
+				{
+					"label": "Limpiar log de HotelAndes",
+					"event": "limpiarLogParranderos"
+				},
+				{
+					"label": "Limpiar log de datanucleus",
+					"event": "limpiarLogDatanucleus"
+				},
+				{
+					"label": "Limpiar Base de Datos HotelAndes",
+					"event": "limpiarBD"
+				}
+			]
+		},		
+		{ "menuTitle": "Documentación",
+		  "options":
+			[
+				{
+					"label": "Modelo conceptual",
+					"event": "mostrarModeloConceptual"
+				},
+				{
+					"label": "Esquema de la BD",
+					"event": "mostrarEsquemaBD"
+				},
+				{
+					"label": "Script creación de la BD",
+					"event": "mostrarScriptBD"
+				},
+				{
+					"label": "Arquitectura de referencia",
+					"event": "mostrarArqRef"
+				}
+			]
+		},		
+		{ "menuTitle": "Requerimientos Iter2",
+		  "options":
+			[
+				{
+					"label": "RF12",
+					"event": "acercaDe"
+				},
+				{
+					"label": "RF13",
+					"event": "acercaDe"
+				},
+				{
+					"label": "RF14",
+					"event": "acercaDe"
+				},
+				{
+					"label": "RF15",
+					"event": "acercaDe"
+				},
+				{
+					"label": "RF16",
+					"event": "acercaDe"
+				},
+				{
+					"label": "RFC6",
+					"event": "acercaDe"
+				},
+				{
+					"label": "RFC7",
+					"event": "acercaDe"
+				},
+				{
+					"label": "RFC8",
+					"event": "acercaDe"
+				}
+			]
+		}		
+		
+	]
+}
+	
