@@ -22,6 +22,7 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -58,12 +59,12 @@ import uniandes.isis2304.hotelandes.persistencia.PersistenciaHotelAndes;
  */
 public class PersistenciaHotelAndes 
 {
-	
+
 	/**
 	 * Logger para escribir la traza de la ejecución
 	 */
 	private static Logger log = Logger.getLogger(PersistenciaHotelAndes.class.getName());
-	
+
 	/**
 	 * Cadena para indicar el tipo de sentencias que se va a utilizar en una consulta
 	 */
@@ -76,18 +77,18 @@ public class PersistenciaHotelAndes
 	 * Atributo privado que es el único objeto de la clase - Patrón SINGLETON
 	 */
 	private static PersistenciaHotelAndes instance;
-	
+
 	/**
 	 * Fábrica de Manejadores de persistencia, para el manejo correcto de las transacciones
 	 */
 	private PersistenceManagerFactory pmf;
-	
+
 	/**
 	 * Arreglo de cadenas con los nombres de las tablas de la base de datos, en su orden:
 	 * Secuenciador, tipoBebida, bebida, bar, bebedor, gustan, sirven y visitan
 	 */
 	private List <String> tablas;
-	
+
 	/**
 	 * Atributo para el acceso a las sentencias SQL propias a PersistenciaParranderos
 	 */
@@ -152,7 +153,7 @@ public class PersistenciaHotelAndes
 	 * Atributo para el acceso a la tabla BAR de la base de datos
 	 */
 	private SQLPlan sqlPlan;
-	
+
 	private SQLHotel sqlHotel;
 
 	/**
@@ -174,7 +175,7 @@ public class PersistenciaHotelAndes
 	/**
 	 * Atributo para el acceso a la tabla BAR de la base de datos
 	 */
-	
+
 	/**
 	 * Atributo para el acceso a la tabla BAR de la base de datos
 	 */
@@ -192,12 +193,12 @@ public class PersistenciaHotelAndes
 	 */
 	private SQLServicioLimpieza sqlServicioLimpieza;
 
-	
+
 	/**
 	 * Atributo para el acceso a la tabla BAR de la base de datos
 	 */
 	private SQLServiciosHotel sqlServiciosHotel;
-	
+
 	/**
 	 * Atributo para el acceso a la tabla BAR de la base de datos
 	 */
@@ -219,10 +220,10 @@ public class PersistenciaHotelAndes
 	 */
 	private SQLUtencilios sqlUtencilios;
 
-	
-	
-	
-	
+
+
+
+
 	/* ****************************************************************
 	 * 			Métodos del MANEJADOR DE PERSISTENCIA
 	 *****************************************************************/
@@ -234,7 +235,7 @@ public class PersistenciaHotelAndes
 	{
 		pmf = JDOHelper.getPersistenceManagerFactory("HotelAndes");		
 		crearClasesSQL ();
-		
+
 		// Define los nombres por defecto de las tablas de la base de datos
 		tablas = new LinkedList<String> ();
 		tablas.add ("hoteles_sequence");
@@ -272,9 +273,9 @@ public class PersistenciaHotelAndes
 		tablas.add("H_TIPOS_HABITACIONES");//32
 		tablas.add("H_UTENCILIOS");//33	
 		tablas.add("H_PRESTAMO_SALONES");//34
-		
-		
-}
+
+
+	}
 
 	/**
 	 * Constructor privado, que recibe los nombres de las tablas en un objeto Json - Patrón SINGLETON
@@ -284,7 +285,7 @@ public class PersistenciaHotelAndes
 	{
 		crearClasesSQL ();
 		tablas = leerNombresTablas (tableConfig);
-		
+
 		String unidadPersistencia = tableConfig.get ("unidadPersistencia").getAsString ();
 		log.trace ("Accediendo unidad de persistencia: " + unidadPersistencia);
 		pmf = JDOHelper.getPersistenceManagerFactory (unidadPersistencia);
@@ -301,7 +302,7 @@ public class PersistenciaHotelAndes
 		}
 		return instance;
 	}
-	
+
 	/**
 	 * Constructor que toma los nombres de las tablas de la base de datos del objeto tableConfig
 	 * @param tableConfig - El objeto JSON con los nombres de las tablas
@@ -324,7 +325,7 @@ public class PersistenciaHotelAndes
 		pmf.close ();
 		instance = null;
 	}
-	
+
 	/**
 	 * Genera una lista con los nombres de las tablas de la base de datos
 	 * @param tableConfig - El objeto Json con los nombres de las tablas
@@ -339,10 +340,10 @@ public class PersistenciaHotelAndes
 		{
 			resp.add (nom.getAsString ());
 		}
-		
+
 		return resp;
 	}
-	
+
 	/**
 	 * Crea los atributos de clases de apoyo SQL
 	 */
@@ -351,39 +352,39 @@ public class PersistenciaHotelAndes
 
 		sqlAcompañante = new SQLAcompañante(this);
 		sqlCliente = new SQLCliente(this);   
-        sqlConvenciones = new SQLConvenciones(this);
-        sqlCuenta = new SQLCuenta(this);
-        sqlEmpleado = new SQLEmpleado(this);
-        sqlEstanMantenimiento = new SQLEstanMantenimiento(this);
-        sqlGimnasio = new SQLGimnasio(this);
-        sqlHabitacion = new SQLHabitacion(this);
-        sqlInternet = new SQLInternet(this);
-        sqlLavPlanEmb = new SQLLavPlanEmb(this);
-        sqlOcupan = new SQLOcupan(this);
-        sqlOfrecen = new SQLOfrecen(this);
-        sqlPiscina = new SQLPiscina(this);
-        sqlPlan = new SQLPlan(this);
-        sqlHotel = new SQLHotel(this);
-        
-        sqlPrestamoSalones = new SQLPrestamo_Salones( this);
-        sqlPrestamoUtencilios = new SQLPrestamosUtencilios(this);
+		sqlConvenciones = new SQLConvenciones(this);
+		sqlCuenta = new SQLCuenta(this);
+		sqlEmpleado = new SQLEmpleado(this);
+		sqlEstanMantenimiento = new SQLEstanMantenimiento(this);
+		sqlGimnasio = new SQLGimnasio(this);
+		sqlHabitacion = new SQLHabitacion(this);
+		sqlInternet = new SQLInternet(this);
+		sqlLavPlanEmb = new SQLLavPlanEmb(this);
+		sqlOcupan = new SQLOcupan(this);
+		sqlOfrecen = new SQLOfrecen(this);
+		sqlPiscina = new SQLPiscina(this);
+		sqlPlan = new SQLPlan(this);
+		sqlHotel = new SQLHotel(this);
 
-        sqlReservacionHotel = new SQLReservacionHotel(this);
+		sqlPrestamoSalones = new SQLPrestamo_Salones( this);
+		sqlPrestamoUtencilios = new SQLPrestamosUtencilios(this);
 
-        sqlRestauranteBar = new SQLRestauranteBar(this);
-        sqlRol = new SQLRol(this);
-        sqlSalones = new SQLSalones(this);
-        sqlServicioLimpieza = new SQLServicioLimpieza(this);
- 
-        sqlServiciosHotel = new SQLServiciosHotel(this);
-        sqlSpa = new SQLSpa(this);
-        sqlSupermercadoTienda = new SQLSupermercadoTienda(this);
-        sqlTiposHabitacion = new SQLTiposHabitacion(this);
-        sqlUtencilios = new SQLUtencilios(this);
-        sqlUtil = new SQLUtil(this);
+		sqlReservacionHotel = new SQLReservacionHotel(this);
 
-		
-     
+		sqlRestauranteBar = new SQLRestauranteBar(this);
+		sqlRol = new SQLRol(this);
+		sqlSalones = new SQLSalones(this);
+		sqlServicioLimpieza = new SQLServicioLimpieza(this);
+
+		sqlServiciosHotel = new SQLServiciosHotel(this);
+		sqlSpa = new SQLSpa(this);
+		sqlSupermercadoTienda = new SQLSupermercadoTienda(this);
+		sqlTiposHabitacion = new SQLTiposHabitacion(this);
+		sqlUtencilios = new SQLUtencilios(this);
+		sqlUtil = new SQLUtil(this);
+
+
+
 	}
 
 	/**
@@ -402,7 +403,7 @@ public class PersistenciaHotelAndes
 		return tablas.get (1);
 	}
 
-	
+
 	/**
 	 * @return La cadena de caracteres con el nombre de la tabla de TipoBebida de parranderos
 	 */
@@ -410,8 +411,8 @@ public class PersistenciaHotelAndes
 	{
 		return tablas.get (2);
 	}
-	
-	
+
+
 	/**
 	 * @return La cadena de caracteres con el nombre de la tabla de TipoBebida de parranderos
 	 */
@@ -419,8 +420,8 @@ public class PersistenciaHotelAndes
 	{
 		return tablas.get (3);
 	}
-	
-	
+
+
 	/**
 	 * @return La cadena de caracteres con el nombre de la tabla de TipoBebida de parranderos
 	 */
@@ -428,8 +429,8 @@ public class PersistenciaHotelAndes
 	{
 		return tablas.get (4);
 	}
-	
-	
+
+
 	/**
 	 * @return La cadena de caracteres con el nombre de la tabla de TipoBebida de parranderos
 	 */
@@ -437,9 +438,9 @@ public class PersistenciaHotelAndes
 	{
 		return tablas.get (5);
 	}
-	
-	
-	
+
+
+
 	/**
 	 * @return La cadena de caracteres con el nombre de la tabla de TipoBebida de parranderos
 	 */
@@ -447,7 +448,7 @@ public class PersistenciaHotelAndes
 	{
 		return tablas.get (6);
 	}
-	
+
 	/**
 	 * @return La cadena de caracteres con el nombre de la tabla de TipoBebida de parranderos
 	 */
@@ -472,7 +473,7 @@ public class PersistenciaHotelAndes
 	{
 		return tablas.get (9);
 	}
-	
+
 	/**
 	 * @return La cadena de caracteres con el nombre de la tabla de Bar de parranderos
 	 */
@@ -480,7 +481,7 @@ public class PersistenciaHotelAndes
 	{
 		return tablas.get (10);
 	}
-	
+
 	/**
 	 * @return La cadena de caracteres con el nombre de la tabla de Bar de parranderos
 	 */
@@ -513,7 +514,7 @@ public class PersistenciaHotelAndes
 	{
 		return tablas.get (14);
 	}
-	
+
 	/**
 	 * @return La cadena de caracteres con el nombre de la tabla de Visitan de parranderos
 	 */
@@ -650,7 +651,7 @@ public class PersistenciaHotelAndes
 		return tablas.get (34);
 	}
 
-	
+
 	/**
 	 * Transacción para el generador de secuencia de Parranderos
 	 * Adiciona entradas al log de la aplicación
@@ -658,11 +659,11 @@ public class PersistenciaHotelAndes
 	 */
 	private long nextval ()
 	{
-        long resp = sqlUtil.nextval (pmf.getPersistenceManager());
-        log.trace ("Generando secuencia: " + resp);
-        return resp;
-    }
-	
+		long resp = sqlUtil.nextval (pmf.getPersistenceManager());
+		log.trace ("Generando secuencia: " + resp);
+		return resp;
+	}
+
 	/**
 	 * Extrae el mensaje de la exception JDODataStoreException embebido en la Exception e, que da el detalle específico del problema encontrado
 	 * @param e - La excepción que ocurrio
@@ -679,60 +680,105 @@ public class PersistenciaHotelAndes
 		return resp;
 	}
 
-//	/* ****************************************************************
-//	 * 			Métodos para manejar los REQUERIMIENTOS 
-//	 *****************************************************************/
-	
-//	/**
-//	 * Método que inserta, de manera transaccional, un tipo de usuario
-//	 * Adiciona entradas al log de la aplicación
-//	 * @param nombre - El nombre de la bebida
-//	 * @param idTipoBebida - El identificador del tipo de bebida (Debe existir en la tabla TipoBebida)
-//	 * @param gradoAlcohol - El grado de alcohol de la bebida (mayor que 0)
-//	 * @return El objeto Rol adicionado. null si ocurre alguna Excepción
-//	 */
+	//	/* ****************************************************************
+	//	 * 			Métodos para manejar los REQUERIMIENTOS 
+	//	 *****************************************************************/
+
+	//	/**
+	//	 * Método que inserta, de manera transaccional, un tipo de usuario
+	//	 * Adiciona entradas al log de la aplicación
+	//	 * @param nombre - El nombre de la bebida
+	//	 * @param idTipoBebida - El identificador del tipo de bebida (Debe existir en la tabla TipoBebida)
+	//	 * @param gradoAlcohol - El grado de alcohol de la bebida (mayor que 0)
+	//	 * @return El objeto Rol adicionado. null si ocurre alguna Excepción
+	//	 */
 	public Rol adicionarRol(String nombre, String descripcion) 
 	{
 		PersistenceManager pm = pmf.getPersistenceManager();
-       Transaction tx=pm.currentTransaction();
-       try
-       {
-           tx.begin();            
-           long idRolLong = nextval ();          
-           long tuplasInsertadas = sqlRol.adicionarRol(pm, idRolLong, nombre,descripcion);
-           tx.commit();
-           
-           log.trace ("Inserción rol: " + nombre + ": " + tuplasInsertadas + " tuplas insertadas");
-           return new Rol(idRolLong,nombre, descripcion);
-       }
-       catch (Exception e)
-       {
-       	e.printStackTrace();
-       	log.error ("Exception : " + e.getMessage() + "\n" + darDetalleException(e));
-       	return null;
-       }
-       finally
-       {
-           if (tx.isActive())
-           {
-               tx.rollback();
-           }
-           pm.close();
-       }
+		Transaction tx=pm.currentTransaction();
+		try
+		{
+			tx.begin();            
+			long idRolLong = nextval ();          
+			long tuplasInsertadas = sqlRol.adicionarRol(pm, idRolLong, nombre,descripcion);
+			tx.commit();
+
+			log.trace ("Inserción rol: " + nombre + ": " + tuplasInsertadas + " tuplas insertadas");
+			return new Rol(idRolLong,nombre, descripcion);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			log.error ("Exception : " + e.getMessage() + "\n" + darDetalleException(e));
+			return null;
+		}
+		finally
+		{
+			if (tx.isActive())
+			{
+				tx.rollback();
+			}
+			pm.close();
+		}
 	}
-	
+
 	public List<ReservacionHotel> RF12 (String[][] habTipoNum, String[][] ServCapHorario){
-		
+		List<Integer> idReservaHabitaciones, idReservaServicios = new ArrayList<Integer>();
+		List<String> infoReservaHabitaciones, infoReservaServicios;
 		List<Hotel> hoteles = sqlHotel.darHoteles(pmf.getPersistenceManager());
+		List<ReservacionHotel> reservas = new ArrayList<ReservacionHotel>();
 		for (int i = 0; i < hoteles.size(); i++) {
+			infoReservaHabitaciones = new ArrayList<String>();
+			infoReservaServicios = new ArrayList<String>();
+			idReservaHabitaciones = new ArrayList<Integer>();
+			idReservaServicios = new ArrayList<Integer>();
+			int numHabitacion = 0;
 			for (int j = 0; j < habTipoNum.length; j++) {
-				Query q = pmf.getPersistenceManager().newQuery(SQL, "SELECT COUNT(*) FROM H_HABITACIONES HAB"
+				Query q = pmf.getPersistenceManager().newQuery(SQL, "SELECT ID FROM H_HABITACIONES HAB"
 						+ " INNER JOIN	H_TIPO_HABITACIONES TIPO ON HAB.ID_TIPO = TIPO.ID "
-						+ "WHERE TIPO.NOMBRE = "+habTipoNum[j][0]+" AND HAB.ID_HOTEL = "+i+" "
-								+ "AND HAB.RESERVADA = 0;");
-				int numHabHotel = (int)q.executeUnique();
-				if(numHabHotel < Integer.parseInt(habTipoNum[j][1])){
+						+ "WHERE TIPO.NOMBRE = "+habTipoNum[j][0]+" AND HAB.ID_HOTEL = "+i+";");
+				idReservaHabitaciones = (List<Integer>)q.executeList();
+
+				for (int k = 0; k < idReservaHabitaciones.size(); k++) {
+					q = pmf.getPersistenceManager().newQuery(SQL, "SELECT FECHALLEGADA FROM H_RESERVACIONES_HOTEL WHERE"
+							+ " ID_HABITACION = "+ idReservaHabitaciones.get(k));
+					List<String> inicioR = q.executeList();
+					q = pmf.getPersistenceManager().newQuery(SQL, "SELECT FECHAPARTIDA FROM H_RESERVACIONES_HOTEL WHERE"
+							+ " ID_HABITACION = "+ idReservaHabitaciones.get(k));
+					List<String> finR = q.executeList();
+
+					if(!inicioR.isEmpty()){
+						boolean heEliminado = false;
+						for (int l = 0; l < inicioR.size() && !heEliminado; l++) {
+							LocalDateTime inicio = LocalDateTime.parse(habTipoNum[j][2], DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+							LocalDateTime fin = LocalDateTime.parse(habTipoNum[j][3], DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+
+							LocalDateTime inicioRe = LocalDateTime.parse(inicioR.get(l), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+							LocalDateTime finRe = LocalDateTime.parse(finR.get(l), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+
+							if((inicio.isAfter(inicioRe) || inicio.isEqual(inicioRe)) && (fin.isBefore(finRe) || fin.isEqual(finRe))){
+								idReservaHabitaciones.remove(k);
+								heEliminado = true;
+							}
+						}
+					}
+
+				}
+
+				if(idReservaHabitaciones.size() < Integer.parseInt(habTipoNum[j][1])){
 					return null;
+				}
+				else{
+					for (int k = 0; k < idReservaHabitaciones.size(); k++) {
+					infoReservaHabitaciones.add(habTipoNum[j][1]+","+habTipoNum[j][2]+","+habTipoNum[j][3]);
+					}
+					
+					numHabitacion+=Integer.parseInt(habTipoNum[j][1]);
+					for (int k = numHabitacion; k < idReservaHabitaciones.size(); k++) {
+						idReservaHabitaciones.remove(k);
+						infoReservaHabitaciones.remove(k);
+					}
+					
 				}
 			}
 			for (int j = 0; j < ServCapHorario.length; j++) {
@@ -740,366 +786,605 @@ public class PersistenciaHotelAndes
 					Query q = pmf.getPersistenceManager().newQuery(SQL, "SELECT ID_GIMNASIO FROM H_SERVICIOS_HOTEL "
 							+ "WHERE IDHOTEL = "+i+" AND ID_GIMNASIO IS NOT NULL;");
 					List<Integer> idServicios = (List<Integer>) q.executeList();
+					q = pmf.getPersistenceManager().newQuery(SQL, "SELECT ID FROM H_SERVICIOS_HOTEL "
+							+ "WHERE IDHOTEL = "+i+" AND ID_GIMNASIO IS NOT NULL;");
+					List<Integer> idServHotel = (List<Integer>) q.executeList();
 					boolean encontre = false;
 					for (int k = 0; k < ServCapHorario.length && !encontre; k++) {
 						q = pmf.getPersistenceManager().newQuery(SQL, "SELECT CAPACIDAD FROM H_GIMNASIOS "
 								+ "WHERE ID = "+idServicios.get(k)+";");
 						if(Integer.parseInt(ServCapHorario[j][1]) <= (Integer) q.executeUnique()){
-							Query inicioR = pmf.getPersistenceManager().newQuery(SQL, "SELECT H_RESERVACIONES_HOTEL FROM H_GIMNASIOS "
-									+ "WHERE ID = "+idServicios.get(k)+";");
-							
-							LocalDateTime inicio = LocalDateTime.parse("", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-							//if(){
-								
-							//}
+							q = pmf.getPersistenceManager().newQuery(SQL, "SELECT FECHALLEGADA FROM H_RESERVACIONES_HOTEL "
+									+ "WHERE ID_SERVICIO = "+idServHotel.get(k)+";");
+							List<String> llegadas = q.executeList();
+							q = pmf.getPersistenceManager().newQuery(SQL, "SELECT FFECHAPARTIDA FROM H_RESERVACIONES_HOTEL "
+									+ "WHERE ID_SERVICIO = "+idServHotel.get(k)+";");
+							List<String> partidas = q.executeList();
+							LocalDateTime inicioR = LocalDateTime.parse(ServCapHorario[j][2], DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+							LocalDateTime finR = LocalDateTime.parse(ServCapHorario[j][3], DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+
+							if(!llegadas.isEmpty()){
+								for (int l = 0; l < llegadas.size(); l++) {
+									LocalDateTime inicio = LocalDateTime.parse(llegadas.get(l), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+									LocalDateTime fin = LocalDateTime.parse(partidas.get(l), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+									if((inicioR.isAfter(inicio) || inicioR.isEqual(inicio) )&& (finR.isBefore(fin)||finR.isEqual(fin))){
+										return null;
+									}
+								}
+							}
 							encontre = true;
+							idReservaServicios.add(idServHotel.get(k));
+							infoReservaServicios.add(ServCapHorario[j][1]+","+ServCapHorario[j][2]+","+ServCapHorario[j][3]);
 						}
 					}
-					
+
 				}
+				else if(ServCapHorario[j][0].equals("Piscina")){
+					Query q = pmf.getPersistenceManager().newQuery(SQL, "SELECT ID_PISCINA FROM H_SERVICIOS_HOTEL "
+							+ "WHERE IDHOTEL = "+i+" AND ID_PISCINA IS NOT NULL;");
+					List<Integer> idServicios = (List<Integer>) q.executeList();
+					q = pmf.getPersistenceManager().newQuery(SQL, "SELECT ID FROM H_SERVICIOS_HOTEL "
+							+ "WHERE IDHOTEL = "+i+" AND ID_PISCINA IS NOT NULL;");
+					List<Integer> idServHotel = (List<Integer>) q.executeList();
+					boolean encontre = false;
+					for (int k = 0; k < ServCapHorario.length && !encontre; k++) {
+						q = pmf.getPersistenceManager().newQuery(SQL, "SELECT CAPACIDAD FROM H_PISCINAS "
+								+ "WHERE ID = "+idServicios.get(k)+";");
+						if(Integer.parseInt(ServCapHorario[j][1]) <= (Integer) q.executeUnique()){
+							q = pmf.getPersistenceManager().newQuery(SQL, "SELECT FECHALLEGADA FROM H_RESERVACIONES_HOTEL "
+									+ "WHERE ID_SERVICIO = "+idServHotel.get(k)+";");
+							List<String> llegadas = q.executeList();
+							q = pmf.getPersistenceManager().newQuery(SQL, "SELECT FFECHAPARTIDA FROM H_RESERVACIONES_HOTEL "
+									+ "WHERE ID_SERVICIO = "+idServHotel.get(k)+";");
+							List<String> partidas = q.executeList();
+							LocalDateTime inicioR = LocalDateTime.parse(ServCapHorario[j][2], DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+							LocalDateTime finR = LocalDateTime.parse(ServCapHorario[j][3], DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+
+							if(!llegadas.isEmpty()){
+								for (int l = 0; l < llegadas.size(); l++) {
+									LocalDateTime inicio = LocalDateTime.parse(llegadas.get(l), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+									LocalDateTime fin = LocalDateTime.parse(partidas.get(l), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+									if((inicioR.isAfter(inicio) || inicioR.isEqual(inicio) )&& (finR.isBefore(fin)||finR.isEqual(fin))){
+										return null;
+									}
+								}
+							}
+							encontre = true;
+							idReservaServicios.add(idServHotel.get(k));
+							infoReservaServicios.add(ServCapHorario[j][1]+","+ServCapHorario[j][2]+","+ServCapHorario[j][3]);
+						}
+					}
+
+				}
+				else if(ServCapHorario[j][0].equals("Bar")){
+					Query q = pmf.getPersistenceManager().newQuery(SQL, "SELECT ID_RESTAURANTEBAR FROM H_SERVICIOS_HOTEL "
+							+ "WHERE IDHOTEL = "+i+" AND ID_RESTAURANTEBAR IS NOT NULL;");
+					List<Integer> idServicios = (List<Integer>) q.executeList();
+					q = pmf.getPersistenceManager().newQuery(SQL, "SELECT ID FROM H_SERVICIOS_HOTEL "
+							+ "WHERE IDHOTEL = "+i+" AND ID_RESTAURANTEBAR IS NOT NULL;");
+					List<Integer> idServHotel = (List<Integer>) q.executeList();
+					boolean encontre = false;
+					for (int k = 0; k < ServCapHorario.length && !encontre; k++) {
+						q = pmf.getPersistenceManager().newQuery(SQL, "SELECT TIPO FROM H_RESTAURANTES_BAR "
+								+ "WHERE ID = "+idServicios.get(k)+";");
+						String tipo = (String)q.executeUnique();
+						if(tipo.equals("Bar")){
+							q = pmf.getPersistenceManager().newQuery(SQL, "SELECT CAPACIDAD FROM H_RESTAURANTES_BAR "
+									+ "WHERE ID = "+idServicios.get(k)+";");
+							if(Integer.parseInt(ServCapHorario[j][1]) <= (Integer) q.executeUnique()){
+								q = pmf.getPersistenceManager().newQuery(SQL, "SELECT FECHALLEGADA FROM H_RESERVACIONES_HOTEL "
+										+ "WHERE ID_SERVICIO = "+idServHotel.get(k)+";");
+								List<String> llegadas = q.executeList();
+								q = pmf.getPersistenceManager().newQuery(SQL, "SELECT FFECHAPARTIDA FROM H_RESERVACIONES_HOTEL "
+										+ "WHERE ID_SERVICIO = "+idServHotel.get(k)+";");
+								List<String> partidas = q.executeList();
+								LocalDateTime inicioR = LocalDateTime.parse(ServCapHorario[j][2], DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+								LocalDateTime finR = LocalDateTime.parse(ServCapHorario[j][3], DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+
+								if(!llegadas.isEmpty()){
+									for (int l = 0; l < llegadas.size(); l++) {
+										LocalDateTime inicio = LocalDateTime.parse(llegadas.get(l), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+										LocalDateTime fin = LocalDateTime.parse(partidas.get(l), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+										if((inicioR.isAfter(inicio) || inicioR.isEqual(inicio) )&& (finR.isBefore(fin)||finR.isEqual(fin))){
+											return null;
+										}
+									}
+								}
+								encontre = true;
+								idReservaServicios.add(idServHotel.get(k));
+								infoReservaServicios.add(ServCapHorario[j][1]+","+ServCapHorario[j][2]+","+ServCapHorario[j][3]);
+							}
+						}
+					}
+
+				}
+				else if(ServCapHorario[j][0].equals("Restaurante")){
+
+
+					Query q = pmf.getPersistenceManager().newQuery(SQL, "SELECT ID_RESTAURANTEBAR FROM H_SERVICIOS_HOTEL "
+							+ "WHERE IDHOTEL = "+i+" AND ID_RESTAURANTEBAR IS NOT NULL;");
+					List<Integer> idServicios = (List<Integer>) q.executeList();
+					q = pmf.getPersistenceManager().newQuery(SQL, "SELECT ID FROM H_SERVICIOS_HOTEL "
+							+ "WHERE IDHOTEL = "+i+" AND ID_RESTAURANTEBAR IS NOT NULL;");
+					List<Integer> idServHotel = (List<Integer>) q.executeList();
+					boolean encontre = false;
+					for (int k = 0; k < ServCapHorario.length && !encontre; k++) {
+						q = pmf.getPersistenceManager().newQuery(SQL, "SELECT TIPO FROM H_RESTAURANTES_BAR "
+								+ "WHERE ID = "+idServicios.get(k)+";");
+						String tipo = (String)q.executeUnique();
+						if(tipo.equals("Restaurante")){
+							q = pmf.getPersistenceManager().newQuery(SQL, "SELECT CAPACIDAD FROM H_RESTAURANTES_BAR "
+									+ "WHERE ID = "+idServicios.get(k)+";");
+							if(Integer.parseInt(ServCapHorario[j][1]) <= (Integer) q.executeUnique()){
+								q = pmf.getPersistenceManager().newQuery(SQL, "SELECT FECHALLEGADA FROM H_RESERVACIONES_HOTEL "
+										+ "WHERE ID_SERVICIO = "+idServHotel.get(k)+";");
+								List<String> llegadas = q.executeList();
+								q = pmf.getPersistenceManager().newQuery(SQL, "SELECT FFECHAPARTIDA FROM H_RESERVACIONES_HOTEL "
+										+ "WHERE ID_SERVICIO = "+idServHotel.get(k)+";");
+								List<String> partidas = q.executeList();
+								LocalDateTime inicioR = LocalDateTime.parse(ServCapHorario[j][2], DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+								LocalDateTime finR = LocalDateTime.parse(ServCapHorario[j][3], DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+
+								if(!llegadas.isEmpty()){
+									for (int l = 0; l < llegadas.size(); l++) {
+										LocalDateTime inicio = LocalDateTime.parse(llegadas.get(l), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+										LocalDateTime fin = LocalDateTime.parse(partidas.get(l), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+										if((inicioR.isAfter(inicio) || inicioR.isEqual(inicio) )&& (finR.isBefore(fin)||finR.isEqual(fin))){
+											return null;
+										}
+									}
+								}
+								encontre = true;
+								idReservaServicios.add(idServHotel.get(k));
+								infoReservaServicios.add(ServCapHorario[j][1]+","+ServCapHorario[j][2]+","+ServCapHorario[j][3]);
+							}
+						}
+					}
+
+				}
+				else if(ServCapHorario[j][0].equals("Salon reunion")){
+					Query q = pmf.getPersistenceManager().newQuery(SQL, "SELECT ID_PRESTAMOSALON FROM H_SERVICIOS_HOTEL "
+							+ "WHERE IDHOTEL = "+i+" AND ID_PRESTAMOSALON IS NOT NULL;");
+					List<Integer> idServicios = (List<Integer>) q.executeList();
+					q = pmf.getPersistenceManager().newQuery(SQL, "SELECT ID FROM H_SERVICIOS_HOTEL "
+							+ "WHERE IDHOTEL = "+i+" AND ID_PRESTAMOSALON IS NOT NULL;");
+					List<Integer> idServHotel = (List<Integer>) q.executeList();
+					boolean encontre = false;
+					for (int k = 0; k < ServCapHorario.length && !encontre; k++) {
+						q = pmf.getPersistenceManager().newQuery(SQL, "SELECT TIPO FROM H_RESTAURANTES_BAR "
+								+ "WHERE ID = "+idServicios.get(k)+";");
+						String tipo = (String)q.executeUnique();
+						if(tipo.equals("Salon reunion")){
+							q = pmf.getPersistenceManager().newQuery(SQL, "SELECT CAPACIDAD FROM H_SALONPRESTAMO "
+									+ "WHERE ID = "+idServicios.get(k)+";");
+							if(Integer.parseInt(ServCapHorario[j][1]) <= (Integer) q.executeUnique()){
+								q = pmf.getPersistenceManager().newQuery(SQL, "SELECT FECHALLEGADA FROM H_RESERVACIONES_HOTEL "
+										+ "WHERE ID_SERVICIO = "+idServHotel.get(k)+";");
+								List<String> llegadas = q.executeList();
+								q = pmf.getPersistenceManager().newQuery(SQL, "SELECT FFECHAPARTIDA FROM H_RESERVACIONES_HOTEL "
+										+ "WHERE ID_SERVICIO = "+idServHotel.get(k)+";");
+								List<String> partidas = q.executeList();
+								LocalDateTime inicioR = LocalDateTime.parse(ServCapHorario[j][2], DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+								LocalDateTime finR = LocalDateTime.parse(ServCapHorario[j][3], DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+
+								if(!llegadas.isEmpty()){
+									for (int l = 0; l < llegadas.size(); l++) {
+										LocalDateTime inicio = LocalDateTime.parse(llegadas.get(l), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+										LocalDateTime fin = LocalDateTime.parse(partidas.get(l), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+										if((inicioR.isAfter(inicio) || inicioR.isEqual(inicio) )&& (finR.isBefore(fin)||finR.isEqual(fin))){
+											return null;
+										}
+									}
+								}
+								encontre = true;
+								idReservaServicios.add(idServHotel.get(k));
+								infoReservaServicios.add(ServCapHorario[j][1]+","+ServCapHorario[j][2]+","+ServCapHorario[j][3]);
+							}
+						}
+					}
+				}
+				else if(ServCapHorario[j][0].equals("Salon conferencia")){
+					Query q = pmf.getPersistenceManager().newQuery(SQL, "SELECT ID_PRESTAMOSALON FROM H_SERVICIOS_HOTEL "
+							+ "WHERE IDHOTEL = "+i+" AND ID_PRESTAMOSALON IS NOT NULL;");
+					List<Integer> idServicios = (List<Integer>) q.executeList();
+					q = pmf.getPersistenceManager().newQuery(SQL, "SELECT ID FROM H_SERVICIOS_HOTEL "
+							+ "WHERE IDHOTEL = "+i+" AND ID_PRESTAMOSALON IS NOT NULL;");
+					List<Integer> idServHotel = (List<Integer>) q.executeList();
+					boolean encontre = false;
+					for (int k = 0; k < ServCapHorario.length && !encontre; k++) {
+						q = pmf.getPersistenceManager().newQuery(SQL, "SELECT TIPO FROM H_RESTAURANTES_BAR "
+								+ "WHERE ID = "+idServicios.get(k)+";");
+						String tipo = (String)q.executeUnique();
+						if(tipo.equals("Salon conferencia")){
+							q = pmf.getPersistenceManager().newQuery(SQL, "SELECT CAPACIDAD FROM H_SALONPRESTAMO "
+									+ "WHERE ID = "+idServicios.get(k)+";");
+							if(Integer.parseInt(ServCapHorario[j][1]) <= (Integer) q.executeUnique()){
+								q = pmf.getPersistenceManager().newQuery(SQL, "SELECT FECHALLEGADA FROM H_RESERVACIONES_HOTEL "
+										+ "WHERE ID_SERVICIO = "+idServHotel.get(k)+";");
+								List<String> llegadas = q.executeList();
+								q = pmf.getPersistenceManager().newQuery(SQL, "SELECT FFECHAPARTIDA FROM H_RESERVACIONES_HOTEL "
+										+ "WHERE ID_SERVICIO = "+idServHotel.get(k)+";");
+								List<String> partidas = q.executeList();
+								LocalDateTime inicioR = LocalDateTime.parse(ServCapHorario[j][2], DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+								LocalDateTime finR = LocalDateTime.parse(ServCapHorario[j][3], DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+
+								if(!llegadas.isEmpty()){
+									for (int l = 0; l < llegadas.size(); l++) {
+										LocalDateTime inicio = LocalDateTime.parse(llegadas.get(l), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+										LocalDateTime fin = LocalDateTime.parse(partidas.get(l), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+										if((inicioR.isAfter(inicio) || inicioR.isEqual(inicio) )&& (finR.isBefore(fin)||finR.isEqual(fin))){
+											return null;
+										}
+									}
+								}
+								encontre = true;
+								idReservaServicios.add(idServHotel.get(k));
+								infoReservaServicios.add(ServCapHorario[j][1]+","+ServCapHorario[j][2]+","+ServCapHorario[j][3]);
+							}
+						}
+					}
+
+				}//fin servicios
 			}
-		}
-		
-		
-		return null;
+			for (int k = 0; k < idReservaHabitaciones.size(); k++) {
+				String [] info = infoReservaHabitaciones.get(k).split(",");
+				Query q = pmf.getPersistenceManager().newQuery(SQL, "INSERT INTO H_RESERVACIONES_HOTEL (ID, ID_USUARIO, FECHALLEGADA, FECHAPARTIDA, NUMEROPERSONAS, PLANPAGO, "
+						+ "ID_SERVICIO, ID_HABITACION) VALUES (101, 1, "+info[1]+", "+info[2]+", "+info[0]+", 0, NULL, "+idReservaHabitaciones.get(k)+")");
+				ReservacionHotel reserva = (ReservacionHotel)q.executeUnique();
+				reservas.add(reserva);
+			}
+			for (int k = 0; k < idReservaServicios.size(); k++) {
+				String [] info = infoReservaServicios.get(k).split(",");
+				Query q = pmf.getPersistenceManager().newQuery(SQL, "INSERT INTO H_RESERVACIONES_HOTEL (ID, ID_USUARIO, FECHALLEGADA, FECHAPARTIDA, NUMEROPERSONAS, PLANPAGO, "
+						+ "ID_SERVICIO, ID_HABITACION) VALUES (300, 1, "+info[1]+", "+info[2]+", "+info[0]+", 0, "+idReservaHabitaciones.get(k)+" ,NULL )");
+				ReservacionHotel reserva = (ReservacionHotel)q.executeUnique();
+				reservas.add(reserva);
+			}
+		}//fin for
+
+		return reservas;
 	}
 	
-//	/**
-//	 * Método que inserta, de manera transaccional, un tipo de usuario
-//	 * Adiciona entradas al log de la aplicación
-//	 * @param nombre - El nombre de la bebida
-//	 * @param idTipoBebida - El identificador del tipo de bebida (Debe existir en la tabla TipoBebida)
-//	 * @param gradoAlcohol - El grado de alcohol de la bebida (mayor que 0)
-//	 * @return El objeto Rol adicionado. null si ocurre alguna Excepción
-//	 */
+	public void RF13 (long idUsuario){
+		
+	}
 
-//	public Empleado adicionarEmpleado(String nombre, int id_rol) 
-//	{
-//		PersistenceManager pm = pmf.getPersistenceManager();
-//      Transaction tx=pm.currentTransaction();
-//      try
-//      {
-//          tx.begin();            
-//          long idlong = nextval ();
-//          String idEmpleado=String.valueOf(idlong);
-//          long tuplasInsertadas = sqlEmpleado.adicionarEmpleado(pm, idEmpleado, nombre,id_rol);
-//          tx.commit();
-//          
-//          log.trace ("Inserción rol: " + nombre + ": " + tuplasInsertadas + " tuplas insertadas");
-//          return new Empleado(idEmpleado,nombre,id_rol);
-//      }
-//      catch (Exception e)
-//      {
-//////      	e.printStackTrace();
-//      	log.error ("Exception : " + e.getMessage() + "\n" + darDetalleException(e));
-//      	return null;
-//      }
-//      finally
-//      {
-//          if (tx.isActive())
-//          {
-//              tx.rollback();
-//          }
-//          pm.close();
-//      }
-//	}
-//	
-//	
+	//	/**
+	//	 * Método que inserta, de manera transaccional, un tipo de usuario
+	//	 * Adiciona entradas al log de la aplicación
+	//	 * @param nombre - El nombre de la bebida
+	//	 * @param idTipoBebida - El identificador del tipo de bebida (Debe existir en la tabla TipoBebida)
+	//	 * @param gradoAlcohol - El grado de alcohol de la bebida (mayor que 0)
+	//	 * @return El objeto Rol adicionado. null si ocurre alguna Excepción
+	//	 */
 
-//	public Empleado adicionarEmpleado(String nombre, int id_rol) 
-//	{
-//		PersistenceManager pm = pmf.getPersistenceManager();
-//      Transaction tx=pm.currentTransaction();
-//      try
-//      {
-//          tx.begin();            
-//          long idlong = nextval ();
-//          String idEmpleado=String.valueOf(idlong);
-//          long tuplasInsertadas = sqlEmpleado.adicionarEmpleado(pm, idEmpleado, nombre,id_rol);
-//          tx.commit();
-//          
-//          log.trace ("Inserción rol: " + nombre + ": " + tuplasInsertadas + " tuplas insertadas");
-//          return new Empleado(idEmpleado,nombre,id_rol);
-//      }
-//      catch (Exception e)
-//      {
-//////      	e.printStackTrace();
-//      	log.error ("Exception : " + e.getMessage() + "\n" + darDetalleException(e));
-//      	return null;
-//      }
-//      finally
-//      {
-//          if (tx.isActive())
-//          {
-//              tx.rollback();
-//          }
-//          pm.close();
-//      }
-//	}
-//	
-//	/**
-//	 * Método que inserta, de manera transaccional, un tipo de usuario
-//	 * Adiciona entradas al log de la aplicación
-//	 * @param nombre - El nombre de la bebida
-//	 * @param idTipoBebida - El identificador del tipo de bebida (Debe existir en la tabla TipoBebida)
-//	 * @param gradoAlcohol - El grado de alcohol de la bebida (mayor que 0)
-//	 * @return El objeto Rol adicionado. null si ocurre alguna Excepción
-//	 */
-//	public Empleado adicionarTipoHabitacion(String nombre,List<String> items) 
-//	{
-//		PersistenceManager pm = pmf.getPersistenceManager();
-//     Transaction tx=pm.currentTransaction();
-//     try
-//     {
-//         tx.begin();            
-//         long idlong = nextval ();
-//         String idEmpleado=String.valueOf(idlong);
-//         long tuplasInsertadas = sqlEmpleado.adicionarEmpleado(pm, idEmpleado, nombre,id_rol);
-//         tx.commit();
-//         
-//         log.trace ("Inserción rol: " + nombre + ": " + tuplasInsertadas + " tuplas insertadas");
-//         return new Empleado(idEmpleado,nombre,id_rol);
-//     }
-//     catch (Exception e)
-//     {
-//////     	e.printStackTrace();
-//     	log.error ("Exception : " + e.getMessage() + "\n" + darDetalleException(e));
-//     	return null;
-//     }
-//     finally
-//     {
-//         if (tx.isActive())
-//         {
-//             tx.rollback();
-//         }
-//         pm.close();
-//     }
-//	}
-	
-	
-	
-//	/**
-//	 * Método que inserta, de manera transaccional, un tipo de usuario
-//	 * Adiciona entradas al log de la aplicación
-//	 * @param nombre - El nombre de la bebida
-//	 * @param idTipoBebida - El identificador del tipo de bebida (Debe existir en la tabla TipoBebida)
-//	 * @param gradoAlcohol - El grado de alcohol de la bebida (mayor que 0)
-//	 * @return El objeto Rol adicionado. null si ocurre alguna Excepción
-//	 */
-//	public Habitacion adicionarHabitacion(String id_tipo,int ocupada) 
-//	{
-//		PersistenceManager pm = pmf.getPersistenceManager();
-//    Transaction tx=pm.currentTransaction();
-//    try
-//    {
-//        tx.begin();            
-//        long idlong = nextval ();
-//        String idHabitacion=String.valueOf(idlong);
-//        long tuplasInsertadas = sqlHabitaciones.adicionarHabitacion(pm, idHabitacion,id_tipo, ocupada);
-//        tx.commit();
-//        
-////        log.trace ("Inserción rol: " + nombre + ": " + tuplasInsertadas + " tuplas insertadas");
-//        return new Habitacion(idHabitacion,id_tipo,ocupada);
-//    }
-//    catch (Exception e)
-//    {
-//////    	e.printStackTrace();
-//    	log.error ("Exception : " + e.getMessage() + "\n" + darDetalleException(e));
-//    	return null;
-//    }
-//    finally
-//    {
-//        if (tx.isActive())
-//        {
-//            tx.rollback();
-//        }
-//        pm.close();
-//    }
-//	}
-	
-	
-	
-//	/**
-//	 * Método que inserta, de manera transaccional, un tipo de usuario
-//	 * Adiciona entradas al log de la aplicación
-//	 * @param nombre - El nombre de la bebida
-//	 * @param idTipoBebida - El identificador del tipo de bebida (Debe existir en la tabla TipoBebida)
-//	 * @param gradoAlcohol - El grado de alcohol de la bebida (mayor que 0)
-//	 * @return El objeto Rol adicionado. null si ocurre alguna Excepción
-//	 */
-//	public ServiciosHotelActual  adicionaServicioHotel(long idHotel, String nombre_servicio) 
-//	{
-//		PersistenceManager pm = pmf.getPersistenceManager();
-//      Transaction tx=pm.currentTransaction();
-//      try
-//      {
-//          tx.begin();            
-//          long idServicio = nextval ();
-//          long tuplasInsertadas = sqlServiciosHotel.adicionarServicios(pm, idHotel, idServicio,nombre_servicio);
-//          tx.commit();
-//          
-//     
-//          return new ServiciosHotelActual(idHotel,idServicio,nombre_servicio);
-//      }
-//      catch (Exception e)
-//      {
-//////      	e.printStackTrace();
-//      	log.error ("Exception : " + e.getMessage() + "\n" + darDetalleException(e));
-//      	return null;
-//      }
-//      finally
-//      {
-//          if (tx.isActive())
-//          {
-//              tx.rollback();
-//          }
-//          pm.close();
-//      }
-//	}
-	
+	//	public Empleado adicionarEmpleado(String nombre, int id_rol) 
+	//	{
+	//		PersistenceManager pm = pmf.getPersistenceManager();
+	//      Transaction tx=pm.currentTransaction();
+	//      try
+	//      {
+	//          tx.begin();            
+	//          long idlong = nextval ();
+	//          String idEmpleado=String.valueOf(idlong);
+	//          long tuplasInsertadas = sqlEmpleado.adicionarEmpleado(pm, idEmpleado, nombre,id_rol);
+	//          tx.commit();
+	//          
+	//          log.trace ("Inserción rol: " + nombre + ": " + tuplasInsertadas + " tuplas insertadas");
+	//          return new Empleado(idEmpleado,nombre,id_rol);
+	//      }
+	//      catch (Exception e)
+	//      {
+	//////      	e.printStackTrace();
+	//      	log.error ("Exception : " + e.getMessage() + "\n" + darDetalleException(e));
+	//      	return null;
+	//      }
+	//      finally
+	//      {
+	//          if (tx.isActive())
+	//          {
+	//              tx.rollback();
+	//          }
+	//          pm.close();
+	//      }
+	//	}
+	//	
+	//	
 
-//	/**
-//	 * Método que inserta, de manera transaccional, un tipo de usuario
-//	 * Adiciona entradas al log de la aplicación
-//	 * @param nombre - El nombre de la bebida
-//	 * @param idTipoBebida - El identificador del tipo de bebida (Debe existir en la tabla TipoBebida)
-//	 * @param gradoAlcohol - El grado de alcohol de la bebida (mayor que 0)
-//	 * @return El objeto Rol adicionado. null si ocurre alguna Excepción
-//	 */
-//	public Plan adicionaPlanConsumo( String tipo, double descuento, int cant_noches ) 
-//	{
-//		PersistenceManager pm = pmf.getPersistenceManager();
-//      Transaction tx=pm.currentTransaction();
-//      try
-//      {
-//          tx.begin();            
-//          long idlong = nextval ();
-//          String idPlan=String.valueOf(idlong);
-//          long tuplasInsertadas = sqlPlanes.adicionarPlan(pm, idPlan, tipo, descuento, cant_noches);
-//          tx.commit();
-//          
-//          return new Plan(idPlan,tipo ,descuento, (int) cant_noches);
-//      }
-//      catch (Exception e)
-//      {
-//////      	e.printStackTrace();
-//      	log.error ("Exception : " + e.getMessage() + "\n" + darDetalleException(e));
-//      	return null;
-//      }
-//      finally
-//      {
-//          if (tx.isActive())
-//          {
-//              tx.rollback();
-//          }
-//          pm.close();
-//      }
-//	}
-	
-//	
-////	/**
-////	 * Método que inserta, de manera transaccional, un tipo de usuario
-////	 * Adiciona entradas al log de la aplicación
-////	 * @param nombre - El nombre de la bebida
-////	 * @param idTipoBebida - El identificador del tipo de bebida (Debe existir en la tabla TipoBebida)
-////	 * @param gradoAlcohol - El grado de alcohol de la bebida (mayor que 0)
-////	 * @return El objeto Rol adicionado. null si ocurre alguna Excepción
-////	 */
-//	public Plan adicionaPlanConsumo( String tipo, double descuento, int cant_noches ) 
-//	{
-//		PersistenceManager pm = pmf.getPersistenceManager();
-//     Transaction tx=pm.currentTransaction();
-//     try
-//     {
-//         tx.begin();            
-//         long idlong = nextval ();
-//         String idPlan=String.valueOf(idlong);
-//         long tuplasInsertadas = sqlPlanes.adicionarPlan(pm, idPlan,tipo,descuento,cant_noches);
-//         tx.commit();
-//         
-//         return new Plan(idPlan,tipo,descuento,cant_noches);
-//     }
-//     catch (Exception e)
-//     {
-//////     	e.printStackTrace();
-//     	log.error ("Exception : " + e.getMessage() + "\n" + darDetalleException(e));
-//     	return null;
-//     }
-//     finally
-//     {
-//         if (tx.isActive())
-//         {
-//             tx.rollback();
-//         }
-//         pm.close();
-//     }
-//	}
-//	
-	
-	
-	
+	//	public Empleado adicionarEmpleado(String nombre, int id_rol) 
+	//	{
+	//		PersistenceManager pm = pmf.getPersistenceManager();
+	//      Transaction tx=pm.currentTransaction();
+	//      try
+	//      {
+	//          tx.begin();            
+	//          long idlong = nextval ();
+	//          String idEmpleado=String.valueOf(idlong);
+	//          long tuplasInsertadas = sqlEmpleado.adicionarEmpleado(pm, idEmpleado, nombre,id_rol);
+	//          tx.commit();
+	//          
+	//          log.trace ("Inserción rol: " + nombre + ": " + tuplasInsertadas + " tuplas insertadas");
+	//          return new Empleado(idEmpleado,nombre,id_rol);
+	//      }
+	//      catch (Exception e)
+	//      {
+	//////      	e.printStackTrace();
+	//      	log.error ("Exception : " + e.getMessage() + "\n" + darDetalleException(e));
+	//      	return null;
+	//      }
+	//      finally
+	//      {
+	//          if (tx.isActive())
+	//          {
+	//              tx.rollback();
+	//          }
+	//          pm.close();
+	//      }
+	//	}
+	//	
+	//	/**
+	//	 * Método que inserta, de manera transaccional, un tipo de usuario
+	//	 * Adiciona entradas al log de la aplicación
+	//	 * @param nombre - El nombre de la bebida
+	//	 * @param idTipoBebida - El identificador del tipo de bebida (Debe existir en la tabla TipoBebida)
+	//	 * @param gradoAlcohol - El grado de alcohol de la bebida (mayor que 0)
+	//	 * @return El objeto Rol adicionado. null si ocurre alguna Excepción
+	//	 */
+	//	public Empleado adicionarTipoHabitacion(String nombre,List<String> items) 
+	//	{
+	//		PersistenceManager pm = pmf.getPersistenceManager();
+	//     Transaction tx=pm.currentTransaction();
+	//     try
+	//     {
+	//         tx.begin();            
+	//         long idlong = nextval ();
+	//         String idEmpleado=String.valueOf(idlong);
+	//         long tuplasInsertadas = sqlEmpleado.adicionarEmpleado(pm, idEmpleado, nombre,id_rol);
+	//         tx.commit();
+	//         
+	//         log.trace ("Inserción rol: " + nombre + ": " + tuplasInsertadas + " tuplas insertadas");
+	//         return new Empleado(idEmpleado,nombre,id_rol);
+	//     }
+	//     catch (Exception e)
+	//     {
+	//////     	e.printStackTrace();
+	//     	log.error ("Exception : " + e.getMessage() + "\n" + darDetalleException(e));
+	//     	return null;
+	//     }
+	//     finally
+	//     {
+	//         if (tx.isActive())
+	//         {
+	//             tx.rollback();
+	//         }
+	//         pm.close();
+	//     }
+	//	}
+
+
+
+	//	/**
+	//	 * Método que inserta, de manera transaccional, un tipo de usuario
+	//	 * Adiciona entradas al log de la aplicación
+	//	 * @param nombre - El nombre de la bebida
+	//	 * @param idTipoBebida - El identificador del tipo de bebida (Debe existir en la tabla TipoBebida)
+	//	 * @param gradoAlcohol - El grado de alcohol de la bebida (mayor que 0)
+	//	 * @return El objeto Rol adicionado. null si ocurre alguna Excepción
+	//	 */
+	//	public Habitacion adicionarHabitacion(String id_tipo,int ocupada) 
+	//	{
+	//		PersistenceManager pm = pmf.getPersistenceManager();
+	//    Transaction tx=pm.currentTransaction();
+	//    try
+	//    {
+	//        tx.begin();            
+	//        long idlong = nextval ();
+	//        String idHabitacion=String.valueOf(idlong);
+	//        long tuplasInsertadas = sqlHabitaciones.adicionarHabitacion(pm, idHabitacion,id_tipo, ocupada);
+	//        tx.commit();
+	//        
+	////        log.trace ("Inserción rol: " + nombre + ": " + tuplasInsertadas + " tuplas insertadas");
+	//        return new Habitacion(idHabitacion,id_tipo,ocupada);
+	//    }
+	//    catch (Exception e)
+	//    {
+	//////    	e.printStackTrace();
+	//    	log.error ("Exception : " + e.getMessage() + "\n" + darDetalleException(e));
+	//    	return null;
+	//    }
+	//    finally
+	//    {
+	//        if (tx.isActive())
+	//        {
+	//            tx.rollback();
+	//        }
+	//        pm.close();
+	//    }
+	//	}
+
+
+
+	//	/**
+	//	 * Método que inserta, de manera transaccional, un tipo de usuario
+	//	 * Adiciona entradas al log de la aplicación
+	//	 * @param nombre - El nombre de la bebida
+	//	 * @param idTipoBebida - El identificador del tipo de bebida (Debe existir en la tabla TipoBebida)
+	//	 * @param gradoAlcohol - El grado de alcohol de la bebida (mayor que 0)
+	//	 * @return El objeto Rol adicionado. null si ocurre alguna Excepción
+	//	 */
+	//	public ServiciosHotelActual  adicionaServicioHotel(long idHotel, String nombre_servicio) 
+	//	{
+	//		PersistenceManager pm = pmf.getPersistenceManager();
+	//      Transaction tx=pm.currentTransaction();
+	//      try
+	//      {
+	//          tx.begin();            
+	//          long idServicio = nextval ();
+	//          long tuplasInsertadas = sqlServiciosHotel.adicionarServicios(pm, idHotel, idServicio,nombre_servicio);
+	//          tx.commit();
+	//          
+	//     
+	//          return new ServiciosHotelActual(idHotel,idServicio,nombre_servicio);
+	//      }
+	//      catch (Exception e)
+	//      {
+	//////      	e.printStackTrace();
+	//      	log.error ("Exception : " + e.getMessage() + "\n" + darDetalleException(e));
+	//      	return null;
+	//      }
+	//      finally
+	//      {
+	//          if (tx.isActive())
+	//          {
+	//              tx.rollback();
+	//          }
+	//          pm.close();
+	//      }
+	//	}
+
+
+	//	/**
+	//	 * Método que inserta, de manera transaccional, un tipo de usuario
+	//	 * Adiciona entradas al log de la aplicación
+	//	 * @param nombre - El nombre de la bebida
+	//	 * @param idTipoBebida - El identificador del tipo de bebida (Debe existir en la tabla TipoBebida)
+	//	 * @param gradoAlcohol - El grado de alcohol de la bebida (mayor que 0)
+	//	 * @return El objeto Rol adicionado. null si ocurre alguna Excepción
+	//	 */
+	//	public Plan adicionaPlanConsumo( String tipo, double descuento, int cant_noches ) 
+	//	{
+	//		PersistenceManager pm = pmf.getPersistenceManager();
+	//      Transaction tx=pm.currentTransaction();
+	//      try
+	//      {
+	//          tx.begin();            
+	//          long idlong = nextval ();
+	//          String idPlan=String.valueOf(idlong);
+	//          long tuplasInsertadas = sqlPlanes.adicionarPlan(pm, idPlan, tipo, descuento, cant_noches);
+	//          tx.commit();
+	//          
+	//          return new Plan(idPlan,tipo ,descuento, (int) cant_noches);
+	//      }
+	//      catch (Exception e)
+	//      {
+	//////      	e.printStackTrace();
+	//      	log.error ("Exception : " + e.getMessage() + "\n" + darDetalleException(e));
+	//      	return null;
+	//      }
+	//      finally
+	//      {
+	//          if (tx.isActive())
+	//          {
+	//              tx.rollback();
+	//          }
+	//          pm.close();
+	//      }
+	//	}
+
+	//	
+	////	/**
+	////	 * Método que inserta, de manera transaccional, un tipo de usuario
+	////	 * Adiciona entradas al log de la aplicación
+	////	 * @param nombre - El nombre de la bebida
+	////	 * @param idTipoBebida - El identificador del tipo de bebida (Debe existir en la tabla TipoBebida)
+	////	 * @param gradoAlcohol - El grado de alcohol de la bebida (mayor que 0)
+	////	 * @return El objeto Rol adicionado. null si ocurre alguna Excepción
+	////	 */
+	//	public Plan adicionaPlanConsumo( String tipo, double descuento, int cant_noches ) 
+	//	{
+	//		PersistenceManager pm = pmf.getPersistenceManager();
+	//     Transaction tx=pm.currentTransaction();
+	//     try
+	//     {
+	//         tx.begin();            
+	//         long idlong = nextval ();
+	//         String idPlan=String.valueOf(idlong);
+	//         long tuplasInsertadas = sqlPlanes.adicionarPlan(pm, idPlan,tipo,descuento,cant_noches);
+	//         tx.commit();
+	//         
+	//         return new Plan(idPlan,tipo,descuento,cant_noches);
+	//     }
+	//     catch (Exception e)
+	//     {
+	//////     	e.printStackTrace();
+	//     	log.error ("Exception : " + e.getMessage() + "\n" + darDetalleException(e));
+	//     	return null;
+	//     }
+	//     finally
+	//     {
+	//         if (tx.isActive())
+	//         {
+	//             tx.rollback();
+	//         }
+	//         pm.close();
+	//     }
+	//	}
+	//	
+
+
+
 	///Requerimiento 7
-	
-//	public void registrarReserva(String id, String fi, String ff, int cant, int num) {
-//		
-//		try {
-//		PersistenceManager pm = pmf.getPersistenceManager();
-//		sqlReservacionesH.adicionarReservacion(pm, id, fi,ff,cant,num);
-//		
-//		}
-//		catch(Exception e){
-//			System.out.println("No se guardo correctamente la reserva en la base de datos");
-//		}
-		
-		
-		
-//		public void requerocho() 
-//		{
-//			
-//			try {
-//				PersistenceManager pm = pmf.getPersistenceManager();
-//				//sqlRestauranteBar.
-//				
-//				}
-//				catch(Exception e){
-//					System.out.println("No se guardo correctamente la reserva en la base de datos");
-//				}
-//				
-//		}
-		
-//	}
+
+	//	public void registrarReserva(String id, String fi, String ff, int cant, int num) {
+	//		
+	//		try {
+	//		PersistenceManager pm = pmf.getPersistenceManager();
+	//		sqlReservacionesH.adicionarReservacion(pm, id, fi,ff,cant,num);
+	//		
+	//		}
+	//		catch(Exception e){
+	//			System.out.println("No se guardo correctamente la reserva en la base de datos");
+	//		}
+
+
+
+	//		public void requerocho() 
+	//		{
+	//			
+	//			try {
+	//				PersistenceManager pm = pmf.getPersistenceManager();
+	//				//sqlRestauranteBar.
+	//				
+	//				}
+	//				catch(Exception e){
+	//					System.out.println("No se guardo correctamente la reserva en la base de datos");
+	//				}
+	//				
+	//		}
+
+	//	}
 	//requerimiento 9
-//	public void registrarCliente(String idCliente,String tipoId, String nombre, int telefono, String correo,long id_Plan,long id_reservacion_Hotel,long id_reserva_servicios, long id_cuenta) {
-//		try {
-//			PersistenceManager pm = pmf.getPersistenceManager();
-//			sqlCliente.adicionarCliente(pm, idCliente, tipoId, nombre, telefono, correo, id_Plan, id_reservacion_Hotel, id_reserva_servicios, id_cuenta);
-//			
-//			}
-//			catch(Exception e){
-//				System.out.println("No se guardo correctamente la reserva en la base de datos");
-//			}
-//			
-//		
-//	
-//	}
-//	
-	
-	
+	//	public void registrarCliente(String idCliente,String tipoId, String nombre, int telefono, String correo,long id_Plan,long id_reservacion_Hotel,long id_reserva_servicios, long id_cuenta) {
+	//		try {
+	//			PersistenceManager pm = pmf.getPersistenceManager();
+	//			sqlCliente.adicionarCliente(pm, idCliente, tipoId, nombre, telefono, correo, id_Plan, id_reservacion_Hotel, id_reserva_servicios, id_cuenta);
+	//			
+	//			}
+	//			catch(Exception e){
+	//				System.out.println("No se guardo correctamente la reserva en la base de datos");
+	//			}
+	//			
+	//		
+	//	
+	//	}
+	//	
+
+
 	//requerimiento 10
-//	public void removerCliente(long id) {
-//	
-//		try {
-//			PersistenceManager pm = pmf.getPersistenceManager();
-//			sqlCliente.eliminarBebedorPorId(pm, id);
-//			
-//			}
-//			catch(Exception e){
-//				System.out.println("No se guardo correctamente la reserva en la base de datos");
-//			}
-//	}
-	
-	
-	
+	//	public void removerCliente(long id) {
+	//	
+	//		try {
+	//			PersistenceManager pm = pmf.getPersistenceManager();
+	//			sqlCliente.eliminarBebedorPorId(pm, id);
+	//			
+	//			}
+	//			catch(Exception e){
+	//				System.out.println("No se guardo correctamente la reserva en la base de datos");
+	//			}
+	//	}
+
+
+
 	public int darDineroRecolectado(PersistenceManager pm,Date fi, Date ff)
 	{
 		return sqlServiciosHotel.darDineroRecolectado(pm, fi, ff);
@@ -1109,19 +1394,11 @@ public class PersistenciaHotelAndes
 	{
 		return sqlServiciosHotel.darServiciosMasPopulares(pm);
 	}
-		
-	
-	
-	
+
+
+
+
 }
-	
-	
-	
-	
-	
-
-
-	
 
 
 
@@ -1129,7 +1406,15 @@ public class PersistenciaHotelAndes
 
 
 
-	
-	
 
- 
+
+
+
+
+
+
+
+
+
+
+

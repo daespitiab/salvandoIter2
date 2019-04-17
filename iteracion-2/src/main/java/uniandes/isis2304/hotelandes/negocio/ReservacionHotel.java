@@ -22,6 +22,7 @@ public class ReservacionHotel {
 		this.fechaF = fechaF;
 		this.numeroPersonas = numeroPersonas;
 		this.plan = plan;
+		
 	}
 	
 	//Metodos
