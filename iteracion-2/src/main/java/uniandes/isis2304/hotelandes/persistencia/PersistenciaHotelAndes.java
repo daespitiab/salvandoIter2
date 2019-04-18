@@ -25,6 +25,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 import javax.jdo.JDODataStoreException;
 import javax.jdo.JDOHelper;
@@ -774,15 +775,15 @@ public class PersistenciaHotelAndes
 				}
 				else{
 					for (int k = 0; k < idReservaHabitaciones.size(); k++) {
-					infoReservaHabitaciones.add(habTipoNum[j][1]+","+habTipoNum[j][2]+","+habTipoNum[j][3]);
+						infoReservaHabitaciones.add(habTipoNum[j][1]+","+habTipoNum[j][2]+","+habTipoNum[j][3]);
 					}
-					
+
 					numHabitacion+=Integer.parseInt(habTipoNum[j][1]);
 					for (int k = numHabitacion; k < idReservaHabitaciones.size(); k++) {
 						idReservaHabitaciones.remove(k);
 						infoReservaHabitaciones.remove(k);
 					}
-					
+
 				}
 			}
 			for (int j = 0; j < ServCapHorario.length; j++) {
@@ -1033,7 +1034,7 @@ public class PersistenciaHotelAndes
 			for (int k = 0; k < idReservaHabitaciones.size(); k++) {
 				String [] info = infoReservaHabitaciones.get(k).split(",");
 				Query q = pmf.getPersistenceManager().newQuery(SQL, "UPDATE SET RESERVADA = 1 WHERE "
-							+ "ID = "+idReservaHabitaciones.get(i)+";"); 
+						+ "ID = "+idReservaHabitaciones.get(i)+";"); 
 				q = pmf.getPersistenceManager().newQuery(SQL, "INSERT INTO H_RESERVACIONES_HOTEL (ID, ID_USUARIO, FECHALLEGADA, FECHAPARTIDA, NUMEROPERSONAS, PLANPAGO, "
 						+ "ID_SERVICIO, ID_HABITACION, TERMINADA) VALUES (101, 1, "+info[1]+", "+info[2]+", "+info[0]+", 0, NULL, "+idReservaHabitaciones.get(k)+", 0);");
 				ReservacionHotel reserva = (ReservacionHotel)q.executeUnique();
@@ -1050,7 +1051,7 @@ public class PersistenciaHotelAndes
 
 		return reservas;
 	}
-	
+
 	public void RF13 (long idUsuario){
 		Query q = pmf.getPersistenceManager().newQuery(SQL, "SELECT ID_HABITACION FROM H_RESERVACIONES_HOTEL WHERE "
 				+ "ID_USUARIO = "+idUsuario+" AND ID_HABITACION IS NOT NULL;");
@@ -1058,16 +1059,18 @@ public class PersistenciaHotelAndes
 		for (int i = 0; i < habitaciones.size(); i++) {
 			q = pmf.getPersistenceManager().newQuery(SQL, "UPDATE H_HABITACIONES SET RESERVADA = 0 FROM WHERE "
 					+ "ID = "+habitaciones.get(i)+";"); 
+			q.execute();
 		}
-		
+
 		q = pmf.getPersistenceManager().newQuery(SQL, "SELECT ID FROM H_RESERVACIONES_HOTEL WHERE "
 				+ "ID_USUARIO = "+idUsuario+";");
 		List<String> reservas = q.executeList();
 		for (int i = 0; i < reservas.size(); i++) {
 			q = pmf.getPersistenceManager().newQuery(SQL, "DELETE FROM H_RESERVACIONES_HOTEL WHERE ID = "+reservas.get(i)+";");
+			q.execute();
 		}
 	}
-	
+
 	public void RF14 (long idUsuario){
 		Query q = pmf.getPersistenceManager().newQuery(SQL, "SELECT ID_HABITACION FROM H_RESERVACIONES_HOTEL WHERE "
 				+ "ID_USUARIO = "+idUsuario+" AND ID_HABITACION IS NOT NULL;");
@@ -1075,33 +1078,179 @@ public class PersistenciaHotelAndes
 		for (int i = 0; i < habitaciones.size(); i++) {
 			q = pmf.getPersistenceManager().newQuery(SQL, "UPDATE SET RESERVADA = 0 WHERE "
 					+ "ID = "+habitaciones.get(i)+";"); 
+			q.execute();
 		}
-		
+
 		q = pmf.getPersistenceManager().newQuery(SQL, "SELECT ID FROM H_RESERVACIONES_HOTEL WHERE "
 				+ "ID_USUARIO = "+idUsuario+";");
 		List<String> reservas = q.executeList();
 		for (int i = 0; i < reservas.size(); i++) {
 			q = pmf.getPersistenceManager().newQuery(SQL, "UPDATE H_RESERVACIONES_HOTEL SET TERMINADA = 1 WHERE ID = "+reservas.get(i)+";");
+			q.execute();
 		}
 	}
-	
+
 	public void RF15(String fechaInicio, String fechaFinal, List<String> mantenimiento){
 		LocalDateTime inicio = LocalDateTime.parse(fechaInicio, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
 		LocalDateTime fin = LocalDateTime.parse(fechaFinal, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
 		for (int i = 0; i < mantenimiento.size(); i++) {
+			Random rdn = new Random();
+			int num = rdn.nextInt(123)*3;
 			String[] objeto = mantenimiento.get(i).split(",");
+			List<String> inicioR = new ArrayList<String>(), finR = new ArrayList<String>(), ids = new ArrayList<String>();
 			if(objeto[0].equals("Habitacion")){
 				Query q = pmf.getPersistenceManager().newQuery(SQL, "SELECT FECHALLEGADA FROM H_REERVACIONES_HOTEL WHERE"
 						+ "ID_HABITACION ="+objeto[1]+";");
-				List<String> inicioR = q.executeResultList();
-				q = pmf.getPersistenceManager().newQuery(SQL, "SELECT FECHALLEGADA FROM H_REERVACIONES_HOTEL WHERE"
+				inicioR = q.executeResultList();
+				q = pmf.getPersistenceManager().newQuery(SQL, "SELECT FECHAPARTIDA FROM H_RESERVACIONES_HOTEL WHERE"
 						+ "ID_HABITACION ="+objeto[1]+";");
-				
+				finR = q.executeList();
+				q = pmf.getPersistenceManager().newQuery(SQL, "SELECT ID FROM H_RESERVACIONES_HOTEL WHERE"
+						+ "ID_HABITACION ="+objeto[1]+";");
+				ids = q.executeList();
 			}
-			else if(objeto[1].equals("Servicio")){
-				
+			else if(objeto[0].equals("Servicio")){
+				Query q = pmf.getPersistenceManager().newQuery(SQL, "SELECT FECHALLEGADA FROM H_RESERVACIONES_HOTEL WHERE"
+						+ "ID_SERVICIO ="+objeto[1]+";");
+				inicioR = q.executeResultList();
+				q = pmf.getPersistenceManager().newQuery(SQL, "SELECT FECHAPARTIDA FROM H_RESERVACIONES_HOTEL WHERE"
+						+ "ID_SERVICIO ="+objeto[1]+";");
+				finR = q.executeList();
+				q = pmf.getPersistenceManager().newQuery(SQL, "SELECT ID FROM H_RESERVACIONES_HOTEL WHERE"
+						+ "ID_SERVICIO ="+objeto[1]+";");
+				ids = q.executeList();
+			}
+			for (int j = 0; j < inicioR.size(); j++) {
+				LocalDateTime in = LocalDateTime.parse(inicioR.get(j), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+				LocalDateTime fn = LocalDateTime.parse(finR.get(j), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+
+				if((inicio.isAfter(in) || inicio.isEqual(in) )&& (fin.isBefore(fn)||fin.isEqual(fn))){
+					boolean laCometi = false;
+					while(!laCometi){
+						in = in.plusDays(3);
+						fn = fn.plusDays(3);
+						if(!(inicio.isAfter(in) || inicio.isEqual(in) ) && !(fin.isBefore(fn)||fin.isEqual(fn))){
+							laCometi = true;
+							if(objeto[0].equals("Habitacion")){
+								Query q = pmf.getPersistenceManager().newQuery(SQL, "UPDATE H_RESERVACIONES_HOTEL SET FECHALLEGADA = "+in.toString()+
+										" WHERE ID_HABITACION ="+ids.get(j)+";");
+								q.execute();
+								q = pmf.getPersistenceManager().newQuery(SQL, "UPDATE H_RESERVACIONES_HOTEL SET FECHAPARTIDA = "+fn.toString()+
+										" WHERE ID_HABITACION ="+ids.get(j)+";");
+								q.execute();
+							}
+							else if(objeto[0].equals("Servicio")){
+								Query q = pmf.getPersistenceManager().newQuery(SQL, "UPDATE H_RESERVACIONES_HOTEL SET FECHALLEGADA = "+in.toString()+
+										" WHERE ID_SERVICIO ="+ids.get(j)+";");
+								q.execute();
+								q = pmf.getPersistenceManager().newQuery(SQL, "UPDATE H_RESERVACIONES_HOTEL SET FECHAPARTIDA = "+fn.toString()+
+										" WHERE ID_SERVICIO ="+ids.get(j)+";");
+								q.execute();
+							}
+						}
+					}
+					if(objeto[0].equals("Habitacion")){
+						Query q = pmf.getPersistenceManager().newQuery(SQL, "INSERT INTO H_RESERVACIONES_HOTEL (ID, ID_USUARIO, FECHALLEGADA, FECHAPARTIDA, NUMEROPERSONAS, PLANPAGO, "
+								+ "ID_SERVICIO, ID_HABITACION, TERMINADA) VALUES ("+num+", NULL, "+in+", "+fn+", NULL, 4, "+objeto[1]+" ,NULL, 0 );");
+						q.execute();
+					}
+					else if(objeto[0].equals("Servicio")){
+						Query q = pmf.getPersistenceManager().newQuery(SQL, "INSERT INTO H_RESERVACIONES_HOTEL (ID, ID_USUARIO, FECHALLEGADA, FECHAPARTIDA, NUMEROPERSONAS, PLANPAGO, "
+								+ "ID_SERVICIO, ID_HABITACION, TERMINADA) VALUES ("+num+", NULL, "+in+", "+fn+", NULL, 4, NULL, "+objeto[1]+", 0 );");
+						q.execute();
+					}
+				}
+
+
 			}
 		}
+	}
+
+	public void RF16(List<String> mantenimiento){
+		for (int i = 0; i < mantenimiento.size(); i++) {
+			String[] objeto = mantenimiento.get(i).split(",");
+			if(objeto[0].equals("Habitacion")){
+				Query q = pmf.getPersistenceManager().newQuery(SQL, "UPDATE H_RESERVACIONES_HOTEL SET TERMINADA = 1 WHERE PLANPAGO = 4 AND ID_HABITACION = "+objeto[1]+");");
+				q.execute();
+			}
+			else if(objeto[0].equals("Servicio")){
+				Query q = pmf.getPersistenceManager().newQuery(SQL, "UPDATE H_RESERVACIONES_HOTEL SET TERMINADA = 1 WHERE PLANPAGO = 4 AND ID_SERVICIO = "+objeto[1]+");");
+				q.execute();
+			}
+		}
+	}
+
+	public String RFC6(){
+		Query q = pmf.getPersistenceManager().newQuery(SQL, "SELECT FECHALLEGADA FROM H_RESERVACIONES_HOTEL ORDER BY FECHALLEGADA ASC;");
+		List<String> reservas = q.executeList();
+
+		String rta = "";
+		int[][] datos = new int[reservas.size()][3];
+		for (int i = 0; i < reservas.size(); i++) {
+			String[] nada = reservas.get(i).split(" ");
+			String[] info = nada[0].split("-");
+			for (int j = 0; j < datos.length; j++) {
+				if(Integer.parseInt(info[0])==datos[j][0]){
+					if(Integer.parseInt(info[1])==datos[j][1]){
+						datos[j][2] ++;
+					}
+				}
+				else{
+					String a = datos[j][0]+"";
+					if(a.equals("")){
+						datos[j][0] = Integer.parseInt(info[0]);
+						datos[j][1] = Integer.parseInt(info[1]);
+						datos[j][2] = 1;
+					}
+				}
+			}			
+
+		}
+
+		int[] mayor = new int[3], menor = new int[3];
+		mayor[0] = datos[0][0];
+		mayor[1] = datos[0][1];
+		mayor[2] = datos[0][2];
+		menor[0] = datos[0][0];
+		menor[1] = datos[0][1];
+		menor[2] = datos[0][2];
+
+		for (int i = 1; i < datos.length; i++) {
+			String a = datos[i][2]+"";
+			if(!a.equals("")){
+				if(mayor[2]<datos[i][2]){
+					mayor[0] = datos[i][0];
+					mayor[1] = datos[i][1];
+					mayor[2] = datos[i][2];
+				}
+				if(menor[2]>datos[i][2]){
+					menor[0] = datos[i][0];
+					menor[1] = datos[i][1];
+					menor[2] = datos[i][2];
+				}
+			}
+		}
+
+		rta = "Mayor mensual:"+mayor[0]+"-"+mayor[1]+" Reservas: "+mayor[2]+" , Menor mensual:"+menor[0]+"-"+menor[1]+" Reservas: "+menor[2];
+		return rta;
+	}
+
+	public List<String> RFC7(){
+
+		Query q = pmf.getPersistenceManager().newQuery(SQL, "SELECT ID FROM H_USUARIOS WHERE ROL = 1;");
+		List<Integer> users = (List<Integer>) q.executeList();
+		for (int i = 0; i < users.size(); i++) {
+			q = pmf.getPersistenceManager().newQuery(SQL, "SELECT HORALLEGADA FROM H_RESERVACIONES_HOTEL WHERE ID_USUARIO = "+users.get(i)+";");
+			List<String> llegadas = q.executeList();
+			q = pmf.getPersistenceManager().newQuery(SQL, "SELECT HORAPARTIDA FROM H_RESERVACIONES_HOTEL WHERE ID_USUARIO = "+users.get(i)+";");
+			List<String> partidas = q.executeList();
+			for (int j = 0; j < llegadas.size(); j++) {
+				LocalDateTime in = LocalDateTime.parse(llegadas.get(i), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+				LocalDateTime fn = LocalDateTime.parse(partidas.get(i), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+			}
+		}
+
+		return null;
 	}
 
 	//	/**
