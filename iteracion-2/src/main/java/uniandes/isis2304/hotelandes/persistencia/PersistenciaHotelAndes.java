@@ -82,7 +82,11 @@ public class PersistenciaHotelAndes
 	 * Fábrica de Manejadores de persistencia, para el manejo correcto de las transacciones
 	 */
 	private PersistenceManagerFactory pmf;
-
+	
+	public PersistenceManagerFactory getPMF()
+	{
+		return pmf;
+	}
 	/**
 	 * Arreglo de cadenas con los nombres de las tablas de la base de datos, en su orden:
 	 * Secuenciador, tipoBebida, bebida, bar, bebedor, gustan, sirven y visitan

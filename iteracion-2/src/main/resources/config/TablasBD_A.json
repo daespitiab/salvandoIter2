@@ -1,15 +1,32 @@
 {
-	"title": "Nombres de las tablas de Parranderos Uniandes para la aplicación A",
-	"unidadPersistencia": "Parranderos",
+	"title": "Nombres de las tablas de hotelAndes para la aplicación A",
+	"unidadPersistencia": "HotelAndes",
 	"tablas":
 	[
-		"Parranderos_sequence",
-		"A_TIPOBEBIDA",
-		"A_BEBIDA",
-		"A_BAR",
-		"A_BEBEDOR",
-		"A_GUSTAN",
-		"A_SIRVEN",
-		"A_VISITAN"
+		"hoteles_sequence",
+		"H_HOTELES" ,
+		"H_ACOMPANANTES",
+		"H_PLANES" ,
+		"H_RESERVACIONES_HOTEL",
+		"H_SALONPRESTAMO",
+		"H_SERVICIOS_HOTEL",
+		"H_CUENTAS",
+		"H_CLIENTESRESERVAS",
+		"H_USUARIOS" ,
+		"H_GIMNASIOS" ,
+		"H_TIENENMAQUINAS",
+		"H_TIPO_HABITACIONES",
+		"H_HABITACIONES",
+		"H_OCUPAN",
+		"H_PRODUCTOS_INSTALACIONES",
+		"H_OFRECEN",
+		"H_PISCINAS",
+		"H_RESTAURANTES_BAR",
+		"H_SPAS",
+		"H_SUPERMERCADOS_TIENDAS",
+		"H_ROLES",
+		"H_INTERNET", 
+		"H_PRESTAMO",
+		"H_LAVANDERIA"		
 	]
 }

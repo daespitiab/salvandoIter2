@@ -1,302 +1,577 @@
-///**~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// * Universidad	de	los	Andes	(Bogotá	- Colombia)
-// * Departamento	de	Ingeniería	de	Sistemas	y	Computación
-// * Licenciado	bajo	el	esquema	Academic Free License versión 2.1
-// * 		
-// * Curso: isis2304 - Sistemas Transaccionales
-// * Proyecto: Parranderos Uniandes
-// * @version 1.0
-// * @author Germán Bravo
-// * Julio de 2018
-// * 
-// * Revisado por: Claudia Jiménez, Christian Ariza
-// * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// */
-//
-//package uniandes.isis2304.hotelandes.interfazDemo;
-//
-//import java.awt.BorderLayout;
-//import java.awt.Color;
-//import java.awt.Desktop;
-//import java.awt.event.ActionEvent;
-//import java.awt.event.ActionListener;
-//import java.io.BufferedWriter;
-//import java.io.File;
-//import java.io.FileReader;
-//import java.io.FileWriter;
-//import java.io.IOException;
-//import java.lang.reflect.Method;
-//import java.sql.Timestamp;
-//import java.util.List;
-//
-//import javax.jdo.JDODataStoreException;
-//import javax.swing.ImageIcon;
-//import javax.swing.JFrame;
-//import javax.swing.JLabel;
-//import javax.swing.JMenu;
-//import javax.swing.JMenuBar;
-//import javax.swing.JMenuItem;
-//import javax.swing.JOptionPane;
-//import javax.swing.UIManager;
-//
-//import org.apache.log4j.Logger;
-//
-//import com.google.gson.Gson;
-//import com.google.gson.JsonArray;
-//import com.google.gson.JsonElement;
-//import com.google.gson.JsonObject;
-//import com.google.gson.stream.JsonReader;
-//
-//import uniandes.isis2304.hotelandes.interfazApp.PanelDatos;
-//import uniandes.isis2304.hotelandes.negocio.HotelAndes;
-//import uniandes.isis2304.hotelandes.negocio.VOBar;
-//import uniandes.isis2304.hotelandes.negocio.VOBebedor;
-//import uniandes.isis2304.hotelandes.negocio.VOBebida;
-//import uniandes.isis2304.hotelandes.negocio.VOGustan;
-//import uniandes.isis2304.hotelandes.negocio.VOSirven;
-//import uniandes.isis2304.hotelandes.negocio.VOTipoBebida;
-//import uniandes.isis2304.hotelandes.negocio.VOVisitan;
-//
-///**
-// * Clase principal de la interfaz
-// * 
-// * @author Germán Bravo
-// */
-//@SuppressWarnings("serial")
-//
-//public class InterfazHotelAndesDemo extends JFrame implements ActionListener
-//{
-//	/* ****************************************************************
-//	 * 			Constantes
-//	 *****************************************************************/
-//	/**
-//	 * Logger para escribir la traza de la ejecución
-//	 */
-//	private static Logger log = Logger.getLogger(InterfazHotelAndesDemo.class.getName());
-//	
-//	/**
-//	 * Ruta al archivo de configuración de la interfaz
-//	 */
-//	private final String CONFIG_INTERFAZ = "./src/main/resources/config/interfaceConfigDemo.json"; 
-//	
-//	/**
-//	 * Ruta al archivo de configuración de los nombres de tablas de la base de datos
-//	 */
-//	private static final String CONFIG_TABLAS = "./src/main/resources/config/TablasBD_A.json"; 
-//	
-//	/* ****************************************************************
-//	 * 			Atributos
-//	 *****************************************************************/
-//    /**
-//     * Objeto JSON con los nombres de las tablas de la base de datos que se quieren utilizar
-//     */
-//    private JsonObject tableConfig;
-//    
-//    /**
-//     * Asociación a la clase principal del negocio.
-//     */
-//    private HotelAndes hotelAndes;
-//    
-//	/* ****************************************************************
-//	 * 			Atributos de interfaz
-//	 *****************************************************************/
-//    /**
-//     * Objeto JSON con la configuración de interfaz de la app.
-//     */
-//    private JsonObject guiConfig;
-//    
-//    /**
-//     * Panel de despliegue de interacción para los requerimientos
-//     */
-//    private PanelDatos panelDatos;
-//    
-//    /**
-//     * Menú de la aplicación
-//     */
-//    private JMenuBar menuBar;
-//
-//	/* ****************************************************************
-//	 * 			Métodos
-//	 *****************************************************************/
-//    /**
-//     * Construye la ventana principal de la aplicación. <br>
-//     * <b>post:</b> Todos los componentes de la interfaz fueron inicializados.
-//     */
-//    public InterfazHotelAndesDemo( )
-//    {
-//        // Carga la configuración de la interfaz desde un archivo JSON
-//        guiConfig = openConfig ("Interfaz", CONFIG_INTERFAZ);
-//        
-//        // Configura la apariencia del frame que contiene la interfaz gráfica
-//        configurarFrame ( );
-//        if (guiConfig != null) 	   
-//        {
-//     	   crearMenu( guiConfig.getAsJsonArray("menuBar") );
-//        }
-//        
-//        tableConfig = openConfig ("Tablas BD", CONFIG_TABLAS);
-//        parranderos = new HotelAndes (tableConfig);
-//        
-//    	String path = guiConfig.get("bannerPath").getAsString();
-//        panelDatos = new PanelDatos ( );
-//
-//        setLayout (new BorderLayout());
-//        add (new JLabel (new ImageIcon (path)), BorderLayout.NORTH );          
-//        add( panelDatos, BorderLayout.CENTER );        
-//    }
-//    
-//	/* ****************************************************************
-//	 * 			Métodos para la configuración de la interfaz
-//	 *****************************************************************/
-//    /**
-//     * Lee datos de configuración para la aplicación, a partir de un archivo JSON o con valores por defecto si hay errores.
-//     * @param tipo - El tipo de configuración deseada
-//     * @param archConfig - Archivo Json que contiene la configuración
-//     * @return Un objeto JSON con la configuración del tipo especificado
-//     * 			NULL si hay un error en el archivo.
-//     */
-//    private JsonObject openConfig (String tipo, String archConfig)
-//    {
-//    	JsonObject config = null;
-//		try 
-//		{
-//			Gson gson = new Gson( );
-//			FileReader file = new FileReader (archConfig);
-//			JsonReader reader = new JsonReader ( file );
-//			config = gson.fromJson(reader, JsonObject.class);
+/**~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * Universidad	de	los	Andes	(Bogotá	- Colombia)
+ * Departamento	de	Ingeniería	de	Sistemas	y	Computación
+ * Licenciado	bajo	el	esquema	Academic Free License versión 2.1
+ * 		
+ * Curso: isis2304 - Sistemas Transaccionales
+ * Proyecto: Parranderos Uniandes
+ * @version 1.0
+ * @author Germán Bravo
+ * Julio de 2018
+ * 
+ * Revisado por: Claudia Jiménez, Christian Ariza
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ */
+
+package uniandes.isis2304.hotelandes.interfazDemo;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Desktop;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.sql.Timestamp;
+import java.util.List;
+
+import javax.jdo.JDODataStoreException;
+import javax.jdo.PersistenceManager;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.UIManager;
+
+import org.apache.log4j.Logger;
+import org.datanucleus.store.query.Query;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.stream.JsonReader;
+
+import uniandes.isis2304.hotelandes.interfazApp.PanelDatos;
+import uniandes.isis2304.hotelandes.negocio.HotelAndes;
+import uniandes.isis2304.hotelandes.negocio.ReservacionHotel;
+import uniandes.isis2304.hotelandes.negocio.VOBar;
+import uniandes.isis2304.hotelandes.negocio.VOBebedor;
+import uniandes.isis2304.hotelandes.negocio.VOBebida;
+import uniandes.isis2304.hotelandes.negocio.VOGustan;
+import uniandes.isis2304.hotelandes.negocio.VOSirven;
+import uniandes.isis2304.hotelandes.negocio.VOTipoBebida;
+import uniandes.isis2304.hotelandes.negocio.VOVisitan;
+import uniandes.isis2304.hotelandes.persistencia.PersistenciaHotelAndes;
+
+/**
+ * Clase principal de la interfaz
+ * 
+ * @author Germán Bravo
+ */
+@SuppressWarnings("serial")
+
+public class InterfazHotelAndesDemo extends JFrame implements ActionListener
+{
+	/* ****************************************************************
+	 * 			Constantes
+	 *****************************************************************/
+	/**
+	 * Logger para escribir la traza de la ejecución
+	 */
+
+	
+	/**
+	 * Ruta al archivo de configuración de la interfaz
+	 */
+	private final String CONFIG_INTERFAZ = "./src/main/resources/config/interfaceConfigDemo.json"; 
+	
+	/**
+	 * Ruta al archivo de configuración de los nombres de tablas de la base de datos
+	 */
+	private static final String CONFIG_TABLAS = "./src/main/resources/config/TablasBD_A.json"; 
+	
+	/* ****************************************************************
+	 * 			Atributos
+	 *****************************************************************/
+    /**
+     * Objeto JSON con los nombres de las tablas de la base de datos que se quieren utilizar
+     */
+    private JsonObject tableConfig;
+    
+    /**
+     * Asociación a la clase principal del negocio.
+     */
+    private HotelAndes hotelAndes;
+    
+    private PersistenciaHotelAndes persistencia;
+    
+	/* ****************************************************************
+	 * 			Atributos de interfaz
+	 *****************************************************************/
+    /**
+     * Objeto JSON con la configuración de interfaz de la app.
+     */
+    private JsonObject guiConfig;
+    
+    /**
+     * Panel de despliegue de interacción para los requerimientos
+     */
+    private PanelDatos panelDatos;
+    
+    /**
+     * Menú de la aplicación
+     */
+    private JMenuBar menuBar;
+
+	/* ****************************************************************
+	 * 			Métodos
+	 *****************************************************************/
+    /**
+     * Construye la ventana principal de la aplicación. <br>
+     * <b>post:</b> Todos los componentes de la interfaz fueron inicializados.
+     */
+    public InterfazHotelAndesDemo( )
+    {
+        // Carga la configuración de la interfaz desde un archivo JSON
+        guiConfig = openConfig ("Interfaz", CONFIG_INTERFAZ);
+        
+        // Configura la apariencia del frame que contiene la interfaz gráfica
+        configurarFrame ( );
+        if (guiConfig != null) 	   
+        {
+     	   crearMenu( guiConfig.getAsJsonArray("menuBar") );
+        }
+        
+        tableConfig = openConfig ("Tablas BD", CONFIG_TABLAS);
+        hotelAndes = new HotelAndes (tableConfig);
+        
+    	String path = guiConfig.get("bannerPath").getAsString();
+        panelDatos = new PanelDatos ( );
+
+        setLayout (new BorderLayout());
+        add (new JLabel (new ImageIcon (path)), BorderLayout.NORTH );          
+        add( panelDatos, BorderLayout.CENTER );        
+    }
+    
+	/* ****************************************************************
+	 * 			Métodos para la configuración de la interfaz
+	 *****************************************************************/
+    /**
+     * Lee datos de configuración para la aplicación, a partir de un archivo JSON o con valores por defecto si hay errores.
+     * @param tipo - El tipo de configuración deseada
+     * @param archConfig - Archivo Json que contiene la configuración
+     * @return Un objeto JSON con la configuración del tipo especificado
+     * 			NULL si hay un error en el archivo.
+     */
+    private JsonObject openConfig (String tipo, String archConfig)
+    {
+    	JsonObject config = null;
+		try 
+		{
+			Gson gson = new Gson( );
+			FileReader file = new FileReader (archConfig);
+			JsonReader reader = new JsonReader ( file );
+			config = gson.fromJson(reader, JsonObject.class);
 //			log.info ("Se encontró un archivo de configuración válido: " + tipo);
-//		} 
-//		catch (Exception e)
-//		{
-////			e.printStackTrace ();
+		} 
+		catch (Exception e)
+		{
+//			e.printStackTrace ();
 //			log.info ("NO se encontró un archivo de configuración válido");			
-//			JOptionPane.showMessageDialog(null, "No se encontró un archivo de configuración de interfaz válido: " + tipo, "Parranderos App", JOptionPane.ERROR_MESSAGE);
-//		}	
-//        return config;
-//    }
-//    
-//    /**
-//     * Método para configurar el frame principal de la aplicación
-//     */
-//    private void configurarFrame(  )
-//    {
-//    	int alto = 0;
-//    	int ancho = 0;
-//    	String titulo = "";	
-//    	
-//    	if ( guiConfig == null )
-//    	{
+			JOptionPane.showMessageDialog(null, "No se encontró un archivo de configuración de interfaz válido: " + tipo, "Parranderos App", JOptionPane.ERROR_MESSAGE);
+		}	
+        return config;
+    }
+    
+    /**
+     * Método para configurar el frame principal de la aplicación
+     */
+    private void configurarFrame(  )
+    {
+    	int alto = 0;
+    	int ancho = 0;
+    	String titulo = "";	
+    	
+    	if ( guiConfig == null )
+    	{
 //    		log.info ( "Se aplica configuración por defecto" );			
-//			titulo = "Parranderos APP Default";
-//			alto = 300;
-//			ancho = 500;
-//    	}
-//    	else
-//    	{
+			titulo = "Parranderos APP Default";
+			alto = 300;
+			ancho = 500;
+    	}
+    	else
+    	{
 //			log.info ( "Se aplica configuración indicada en el archivo de configuración" );
-//    		titulo = guiConfig.get("title").getAsString();
-//			alto= guiConfig.get("frameH").getAsInt();
-//			ancho = guiConfig.get("frameW").getAsInt();
-//    	}
-//    	
-//        setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-//        setLocation (50,50);
-//        setResizable( true );
-//        setBackground( Color.WHITE );
-//
-//        setTitle( titulo );
-//		setSize ( ancho, alto);        
-//    }
-//
-//    /**
-//     * Método para crear el menú de la aplicación con base em el objeto JSON leído
-//     * Genera una barra de menú y los menús con sus respectivas opciones
-//     * @param jsonMenu - Arreglo Json con los menùs deseados
-//     */
-//    private void crearMenu(  JsonArray jsonMenu )
-//    {    	
-//    	// Creación de la barra de menús
-//        menuBar = new JMenuBar();       
-//        for (JsonElement men : jsonMenu)
-//        {
-//        	// Creación de cada uno de los menús
-//        	JsonObject jom = men.getAsJsonObject(); 
-//
-//        	String menuTitle = jom.get("menuTitle").getAsString();        	
-//        	JsonArray opciones = jom.getAsJsonArray("options");
-//        	
-//        	JMenu menu = new JMenu( menuTitle);
-//        	
-//        	for (JsonElement op : opciones)
-//        	{       	
-//        		// Creación de cada una de las opciones del menú
-//        		JsonObject jo = op.getAsJsonObject(); 
-//        		String lb =   jo.get("label").getAsString();
-//        		String event = jo.get("event").getAsString();
-//        		
-//        		JMenuItem mItem = new JMenuItem( lb );
-//        		mItem.addActionListener( this );
-//        		mItem.setActionCommand(event);
-//        		
-//        		menu.add(mItem);
-//        	}       
-//        	menuBar.add( menu );
-//        }        
-//        setJMenuBar ( menuBar );	
-//    }
-//    
-//	/* ****************************************************************
-//	 * 			Demos de TipoBebida
-//	 *****************************************************************/
-//    /**
-//     * Demostración de creación, consulta y borrado de Tipos de Bebida
-//     * Muestra la traza de la ejecución en el panelDatos
-//     * 
-//     * Pre: La base de datos está vacía
-//     * Post: La base de datos está vacía
-//     */
-//    public void demoTipoBebida( )
-//    {
-//    	try 
-//    	{
-//    		// Ejecución de la demo y recolección de los resultados
-//			// ATENCIÓN: En una aplicación real, los datos JAMÁS están en el código
-//			String nombreTipoBebida = "Vino tinto";
-//			boolean errorTipoBebida = false;
-//			VOTipoBebida tipoBebida = parranderos.adicionarTipoBebida (nombreTipoBebida);
-//			if (tipoBebida == null)
-//			{
-//				tipoBebida = parranderos.darTipoBebidaPorNombre (nombreTipoBebida);
-//				errorTipoBebida = true;
-//			}
-//			List <VOTipoBebida> lista = parranderos.darVOTiposBebida();
-//			long tbEliminados = parranderos.eliminarTipoBebidaPorId (tipoBebida.getId ());
-//			
-//			// Generación de la cadena de caracteres con la traza de la ejecución de la demo
-//			String resultado = "Demo de creación y listado de TipoBebida\n\n";
-//			resultado += "\n\n************ Generando datos de prueba ************ \n";
-//			if (errorTipoBebida)
-//			{
-//				resultado += "*** Exception creando tipo de bebida !!\n";
-//				resultado += "*** Es probable que ese tipo de bebida ya existiera y hay restricción de UNICIDAD sobre el nombre del tipo de bebida\n";
-//				resultado += "*** Revise el log de parranderos para más detalles\n";
-//			}
-//			resultado += "Adicionado el tipo de bebida con nombre: " + nombreTipoBebida + "\n";
-//			resultado += "\n\n************ Ejecutando la demo ************ \n";
-//			resultado +=  "\n" + listarTiposBebida (lista);
-//			resultado += "\n\n************ Limpiando la base de datos ************ \n";
-//			resultado += tbEliminados + " Tipos de bebida eliminados\n";
-//			resultado += "\n Demo terminada";
-//   
-//			panelDatos.actualizarInterfaz(resultado);
-//		} 
-//    	catch (Exception e) 
-//    	{
-////			e.printStackTrace();
-//			String resultado = generarMensajeError(e);
-//			panelDatos.actualizarInterfaz(resultado);
-//		}
-//    }
+    		titulo = guiConfig.get("title").getAsString();
+			alto= guiConfig.get("frameH").getAsInt();
+			ancho = guiConfig.get("frameW").getAsInt();
+    	}
+    	
+        setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+        setLocation (50,50);
+        setResizable( true );
+        setBackground( Color.WHITE );
+
+        setTitle( titulo );
+		setSize ( ancho, alto);        
+    }
+
+    /**
+     * Método para crear el menú de la aplicación con base em el objeto JSON leído
+     * Genera una barra de menú y los menús con sus respectivas opciones
+     * @param jsonMenu - Arreglo Json con los menùs deseados
+     */
+    private void crearMenu(  JsonArray jsonMenu )
+    {    	
+    	// Creación de la barra de menús
+        menuBar = new JMenuBar();       
+        for (JsonElement men : jsonMenu)
+        {
+        	// Creación de cada uno de los menús
+        	JsonObject jom = men.getAsJsonObject(); 
+
+        	String menuTitle = jom.get("menuTitle").getAsString();        	
+        	JsonArray opciones = jom.getAsJsonArray("options");
+        	
+        	JMenu menu = new JMenu( menuTitle);
+        	
+        	for (JsonElement op : opciones)
+        	{       	
+        		// Creación de cada una de las opciones del menú
+        		JsonObject jo = op.getAsJsonObject(); 
+        		String lb =   jo.get("label").getAsString();
+        		String event = jo.get("event").getAsString();
+        		
+        		JMenuItem mItem = new JMenuItem( lb );
+        		mItem.addActionListener( this );
+        		mItem.setActionCommand(event);
+        		
+        		menu.add(mItem);
+        	}       
+        	menuBar.add( menu );
+        }        
+        setJMenuBar ( menuBar );	
+    }
+    
+	/* ****************************************************************
+	 * 			Demos de TipoBebida
+	 *****************************************************************/
+    /**
+     * Demostración de creación, consulta y borrado de Tipos de Bebida
+     * Muestra la traza de la ejecución en el panelDatos
+     * 
+     * Pre: La base de datos está vacía
+     * Post: La base de datos está vacía
+     */
+    public void demoReqF12( )
+    {			System.out.println("hello");
+
+    	try 
+    	{	System.out.println("hello2");
+    		// Ejecución de la demo y recolección de los resultados
+			// ATENCIÓN: En una aplicación real, los datos JAMÁS están en el código
+			//Creacion de hotel
+    		String[][] matrizHabitacion= new String[2][4];
+    		matrizHabitacion[0][0]="Tipo";
+    		matrizHabitacion[0][1]="Capacidad";
+    		matrizHabitacion[0][2]="HoraLlegada";
+    		matrizHabitacion[0][3]="HoraPartida";
+    		matrizHabitacion[1][0]="Sencilla";
+    		matrizHabitacion[1][1]="2";
+    		matrizHabitacion[1][2]="2019-10-30 22:30";
+    		matrizHabitacion[1][3]="2019-11-30 22:30";
+    		
+    		String[][] matrizServicio= new String[2][4];    		
+			PersistenceManager pm = persistencia.getPMF().getPersistenceManager();
+			Query q= (Query) pm.newQuery(persistencia.SQL, "INSERT INTO H_HOTELES (ID, NOMBRE, UBICACION, CATEGORIA, TELEFONO) VALUES (0, 'Hotel Oasis', 'Calle falsa #123', 'Cinco estrellas', 11111);");
+			Query w=(Query) pm.newQuery(persistencia.SQL, "INSERT INTO H_TIPO_HABITACIONES (ID, NOMBRE, DESCRIPCION) VALUES (1, 'Doble', 'Cama doble, televisor, escritorio, minibar, clóset y baño privado');");
+			Query z=(Query) pm.newQuery(persistencia.SQL, "INSERT INTO H_TIPO_HABITACIONES (ID, NOMBRE, DESCRIPCION) VALUES (2, 'Suite', 'Cama king, televisor 52'', sofá, escritorio, sala, jacuzzi, tina en baño privado, minibar, cocina y balcón');");
+			Query r=(Query) pm.newQuery(persistencia.SQL, "INSERT INTO H_TIPO_HABITACIONES (ID, NOMBRE, DESCRIPCION) VALUES (2, 'Suite', 'Cama king, televisor 52'', sofá, escritorio, sala, jacuzzi, tina en baño privado, minibar, cocina y balcón');");
+			Query a=(Query) pm.newQuery(persistencia.SQL, "INSERT INTO H_HABITACIONES(ID,HAB_NUM,ID_HOTEL,ID_TIPO,RESERVADA,PRECIONOCHE) VALUES (0,101,0,0,0,50000);");
+						
+			List<ReservacionHotel> lista=persistencia.RF12(matrizHabitacion, matrizServicio);
+			System.out.println(lista.size());
+			boolean error = false;
+			String mensaje="";
+			if(lista==null)
+			{
+				System.out.println("a la verga");
+			}
+			if (lista.size() == 0)
+			{
+				mensaje="No se ha podido realizar la reservación por falta de disponibilidad de los servicios o habitaciones solicitadas en la fecha indicada";
+				error = true;
+			}
+		
+			// Generación de la cadena de caracteres con la traza de la ejecución de la demo
+			String resultado = "Demo de creación de reserva para una Convencion";
+			resultado += "\n\n************ Generando datos de prueba ************ \n";
+			if (error)
+			{
+				resultado += mensaje;
+				
+			}
+			for(int i=0;i<lista.size();i++)
+			{
+			ReservacionHotel actual=lista.get(i);				
+			resultado += "Adicionado la reserva con id : " + actual.getId() + "\n";
+			}
+			panelDatos.actualizarInterfaz(resultado);
+		} 
+    	catch (Exception e) 
+    	{
+//			e.printStackTrace();
+			String resultado = generarMensajeError(e);
+			panelDatos.actualizarInterfaz(resultado);
+		}
+    }
+    
+    public void demoReqF13( )
+    {			System.out.println("hello");
+
+    	try 
+    	{	System.out.println("hello2");
+    		// Ejecución de la demo y recolección de los resultados
+			// ATENCIÓN: En una aplicación real, los datos JAMÁS están en el código
+			//Creacion de hotel
+    		String[][] matrizHabitacion= new String[2][4];
+    		matrizHabitacion[0][0]="Tipo";
+    		matrizHabitacion[0][1]="Capacidad";
+    		matrizHabitacion[0][2]="HoraLlegada";
+    		matrizHabitacion[0][3]="HoraPartida";
+    		matrizHabitacion[1][0]="Sencilla";
+    		matrizHabitacion[1][1]="2";
+    		matrizHabitacion[1][2]="2019-10-30 22:30";
+    		matrizHabitacion[1][3]="2019-11-30 22:30";
+    		
+    		String[][] matrizServicio= new String[2][4];    		
+			PersistenceManager pm = persistencia.getPMF().getPersistenceManager();
+			Query q= (Query) pm.newQuery(persistencia.SQL, "INSERT INTO H_HOTELES (ID, NOMBRE, UBICACION, CATEGORIA, TELEFONO) VALUES (0, 'Hotel Oasis', 'Calle falsa #123', 'Cinco estrellas', 11111);");
+			Query w=(Query) pm.newQuery(persistencia.SQL, "INSERT INTO H_TIPO_HABITACIONES (ID, NOMBRE, DESCRIPCION) VALUES (1, 'Doble', 'Cama doble, televisor, escritorio, minibar, clóset y baño privado');");
+			Query z=(Query) pm.newQuery(persistencia.SQL, "INSERT INTO H_TIPO_HABITACIONES (ID, NOMBRE, DESCRIPCION) VALUES (2, 'Suite', 'Cama king, televisor 52'', sofá, escritorio, sala, jacuzzi, tina en baño privado, minibar, cocina y balcón');");
+			Query r=(Query) pm.newQuery(persistencia.SQL, "INSERT INTO H_TIPO_HABITACIONES (ID, NOMBRE, DESCRIPCION) VALUES (2, 'Suite', 'Cama king, televisor 52'', sofá, escritorio, sala, jacuzzi, tina en baño privado, minibar, cocina y balcón');");
+			Query a=(Query) pm.newQuery(persistencia.SQL, "INSERT INTO H_HABITACIONES(ID,HAB_NUM,ID_HOTEL,ID_TIPO,RESERVADA,PRECIONOCHE) VALUES (0,101,0,0,0,50000);");
+						
+			List<ReservacionHotel> lista=persistencia.RF12(matrizHabitacion, matrizServicio);
+			System.out.println(lista.size());
+			boolean error = false;
+			String mensaje="";
+			if(lista==null)
+			{
+				System.out.println("a la verga");
+			}
+			if (lista.size() == 0)
+			{
+				mensaje="No se ha podido realizar la reservación por falta de disponibilidad de los servicios o habitaciones solicitadas en la fecha indicada";
+				error = true;
+			}
+		
+			// Generación de la cadena de caracteres con la traza de la ejecución de la demo
+			String resultado = "Demo de creación de reserva para una Convencion";
+			resultado += "\n\n************ Generando datos de prueba ************ \n";
+			if (error)
+			{
+				resultado += mensaje;
+				
+			}
+			for(int i=0;i<lista.size();i++)
+			{
+			ReservacionHotel actual=lista.get(i);				
+			resultado += "Adicionado la reserva con id : " + actual.getId() + "\n";
+			}
+			panelDatos.actualizarInterfaz(resultado);
+		} 
+    	catch (Exception e) 
+    	{
+//			e.printStackTrace();
+			String resultado = generarMensajeError(e);
+			panelDatos.actualizarInterfaz(resultado);
+		}
+    }
+    public void demoReqF14( )
+    {			System.out.println("hello");
+
+    	try 
+    	{	System.out.println("hello2");
+    		// Ejecución de la demo y recolección de los resultados
+			// ATENCIÓN: En una aplicación real, los datos JAMÁS están en el código
+			//Creacion de hotel
+    		String[][] matrizHabitacion= new String[2][4];
+    		matrizHabitacion[0][0]="Tipo";
+    		matrizHabitacion[0][1]="Capacidad";
+    		matrizHabitacion[0][2]="HoraLlegada";
+    		matrizHabitacion[0][3]="HoraPartida";
+    		matrizHabitacion[1][0]="Sencilla";
+    		matrizHabitacion[1][1]="2";
+    		matrizHabitacion[1][2]="2019-10-30 22:30";
+    		matrizHabitacion[1][3]="2019-11-30 22:30";
+    		
+    		String[][] matrizServicio= new String[2][4];    		
+			PersistenceManager pm = persistencia.getPMF().getPersistenceManager();
+			Query q= (Query) pm.newQuery(persistencia.SQL, "INSERT INTO H_HOTELES (ID, NOMBRE, UBICACION, CATEGORIA, TELEFONO) VALUES (0, 'Hotel Oasis', 'Calle falsa #123', 'Cinco estrellas', 11111);");
+			Query w=(Query) pm.newQuery(persistencia.SQL, "INSERT INTO H_TIPO_HABITACIONES (ID, NOMBRE, DESCRIPCION) VALUES (1, 'Doble', 'Cama doble, televisor, escritorio, minibar, clóset y baño privado');");
+			Query z=(Query) pm.newQuery(persistencia.SQL, "INSERT INTO H_TIPO_HABITACIONES (ID, NOMBRE, DESCRIPCION) VALUES (2, 'Suite', 'Cama king, televisor 52'', sofá, escritorio, sala, jacuzzi, tina en baño privado, minibar, cocina y balcón');");
+			Query r=(Query) pm.newQuery(persistencia.SQL, "INSERT INTO H_TIPO_HABITACIONES (ID, NOMBRE, DESCRIPCION) VALUES (2, 'Suite', 'Cama king, televisor 52'', sofá, escritorio, sala, jacuzzi, tina en baño privado, minibar, cocina y balcón');");
+			Query a=(Query) pm.newQuery(persistencia.SQL, "INSERT INTO H_HABITACIONES(ID,HAB_NUM,ID_HOTEL,ID_TIPO,RESERVADA,PRECIONOCHE) VALUES (0,101,0,0,0,50000);");
+						
+			List<ReservacionHotel> lista=persistencia.RF12(matrizHabitacion, matrizServicio);
+			System.out.println(lista.size());
+			boolean error = false;
+			String mensaje="";
+			if(lista==null)
+			{
+				System.out.println("a la verga");
+			}
+			if (lista.size() == 0)
+			{
+				mensaje="No se ha podido realizar la reservación por falta de disponibilidad de los servicios o habitaciones solicitadas en la fecha indicada";
+				error = true;
+			}
+		
+			// Generación de la cadena de caracteres con la traza de la ejecución de la demo
+			String resultado = "Demo de creación de reserva para una Convencion";
+			resultado += "\n\n************ Generando datos de prueba ************ \n";
+			if (error)
+			{
+				resultado += mensaje;
+				
+			}
+			for(int i=0;i<lista.size();i++)
+			{
+			ReservacionHotel actual=lista.get(i);				
+			resultado += "Adicionado la reserva con id : " + actual.getId() + "\n";
+			}
+			panelDatos.actualizarInterfaz(resultado);
+		} 
+    	catch (Exception e) 
+    	{
+//			e.printStackTrace();
+			String resultado = generarMensajeError(e);
+			panelDatos.actualizarInterfaz(resultado);
+		}
+    }
+    public void demoReqF15( )
+    {			System.out.println("hello");
+
+    	try 
+    	{	System.out.println("hello2");
+    		// Ejecución de la demo y recolección de los resultados
+			// ATENCIÓN: En una aplicación real, los datos JAMÁS están en el código
+			//Creacion de hotel
+    		String[][] matrizHabitacion= new String[2][4];
+    		matrizHabitacion[0][0]="Tipo";
+    		matrizHabitacion[0][1]="Capacidad";
+    		matrizHabitacion[0][2]="HoraLlegada";
+    		matrizHabitacion[0][3]="HoraPartida";
+    		matrizHabitacion[1][0]="Sencilla";
+    		matrizHabitacion[1][1]="2";
+    		matrizHabitacion[1][2]="2019-10-30 22:30";
+    		matrizHabitacion[1][3]="2019-11-30 22:30";
+    		
+    		String[][] matrizServicio= new String[2][4];    		
+			PersistenceManager pm = persistencia.getPMF().getPersistenceManager();
+			Query q= (Query) pm.newQuery(persistencia.SQL, "INSERT INTO H_HOTELES (ID, NOMBRE, UBICACION, CATEGORIA, TELEFONO) VALUES (0, 'Hotel Oasis', 'Calle falsa #123', 'Cinco estrellas', 11111);");
+			Query w=(Query) pm.newQuery(persistencia.SQL, "INSERT INTO H_TIPO_HABITACIONES (ID, NOMBRE, DESCRIPCION) VALUES (1, 'Doble', 'Cama doble, televisor, escritorio, minibar, clóset y baño privado');");
+			Query z=(Query) pm.newQuery(persistencia.SQL, "INSERT INTO H_TIPO_HABITACIONES (ID, NOMBRE, DESCRIPCION) VALUES (2, 'Suite', 'Cama king, televisor 52'', sofá, escritorio, sala, jacuzzi, tina en baño privado, minibar, cocina y balcón');");
+			Query r=(Query) pm.newQuery(persistencia.SQL, "INSERT INTO H_TIPO_HABITACIONES (ID, NOMBRE, DESCRIPCION) VALUES (2, 'Suite', 'Cama king, televisor 52'', sofá, escritorio, sala, jacuzzi, tina en baño privado, minibar, cocina y balcón');");
+			Query a=(Query) pm.newQuery(persistencia.SQL, "INSERT INTO H_HABITACIONES(ID,HAB_NUM,ID_HOTEL,ID_TIPO,RESERVADA,PRECIONOCHE) VALUES (0,101,0,0,0,50000);");
+						
+			List<ReservacionHotel> lista=persistencia.RF12(matrizHabitacion, matrizServicio);
+			System.out.println(lista.size());
+			boolean error = false;
+			String mensaje="";
+			if(lista==null)
+			{
+				System.out.println("a la verga");
+			}
+			if (lista.size() == 0)
+			{
+				mensaje="No se ha podido realizar la reservación por falta de disponibilidad de los servicios o habitaciones solicitadas en la fecha indicada";
+				error = true;
+			}
+		
+			// Generación de la cadena de caracteres con la traza de la ejecución de la demo
+			String resultado = "Demo de creación de reserva para una Convencion";
+			resultado += "\n\n************ Generando datos de prueba ************ \n";
+			if (error)
+			{
+				resultado += mensaje;
+				
+			}
+			for(int i=0;i<lista.size();i++)
+			{
+			ReservacionHotel actual=lista.get(i);				
+			resultado += "Adicionado la reserva con id : " + actual.getId() + "\n";
+			}
+			panelDatos.actualizarInterfaz(resultado);
+		} 
+    	catch (Exception e) 
+    	{
+//			e.printStackTrace();
+			String resultado = generarMensajeError(e);
+			panelDatos.actualizarInterfaz(resultado);
+		}
+    }
+    public void demoReqF16( )
+    {			System.out.println("hello");
+
+    	try 
+    	{	System.out.println("hello2");
+    		// Ejecución de la demo y recolección de los resultados
+			// ATENCIÓN: En una aplicación real, los datos JAMÁS están en el código
+			//Creacion de hotel
+    		String[][] matrizHabitacion= new String[2][4];
+    		matrizHabitacion[0][0]="Tipo";
+    		matrizHabitacion[0][1]="Capacidad";
+    		matrizHabitacion[0][2]="HoraLlegada";
+    		matrizHabitacion[0][3]="HoraPartida";
+    		matrizHabitacion[1][0]="Sencilla";
+    		matrizHabitacion[1][1]="2";
+    		matrizHabitacion[1][2]="2019-10-30 22:30";
+    		matrizHabitacion[1][3]="2019-11-30 22:30";
+    		
+    		String[][] matrizServicio= new String[2][4];    		
+			PersistenceManager pm = persistencia.getPMF().getPersistenceManager();
+			Query q= (Query) pm.newQuery(persistencia.SQL, "INSERT INTO H_HOTELES (ID, NOMBRE, UBICACION, CATEGORIA, TELEFONO) VALUES (0, 'Hotel Oasis', 'Calle falsa #123', 'Cinco estrellas', 11111);");
+			Query w=(Query) pm.newQuery(persistencia.SQL, "INSERT INTO H_TIPO_HABITACIONES (ID, NOMBRE, DESCRIPCION) VALUES (1, 'Doble', 'Cama doble, televisor, escritorio, minibar, clóset y baño privado');");
+			Query z=(Query) pm.newQuery(persistencia.SQL, "INSERT INTO H_TIPO_HABITACIONES (ID, NOMBRE, DESCRIPCION) VALUES (2, 'Suite', 'Cama king, televisor 52'', sofá, escritorio, sala, jacuzzi, tina en baño privado, minibar, cocina y balcón');");
+			Query r=(Query) pm.newQuery(persistencia.SQL, "INSERT INTO H_TIPO_HABITACIONES (ID, NOMBRE, DESCRIPCION) VALUES (2, 'Suite', 'Cama king, televisor 52'', sofá, escritorio, sala, jacuzzi, tina en baño privado, minibar, cocina y balcón');");
+			Query a=(Query) pm.newQuery(persistencia.SQL, "INSERT INTO H_HABITACIONES(ID,HAB_NUM,ID_HOTEL,ID_TIPO,RESERVADA,PRECIONOCHE) VALUES (0,101,0,0,0,50000);");
+						
+			List<ReservacionHotel> lista=persistencia.RF12(matrizHabitacion, matrizServicio);
+			System.out.println(lista.size());
+			boolean error = false;
+			String mensaje="";
+			if(lista==null)
+			{
+				System.out.println("a la verga");
+			}
+			if (lista.size() == 0)
+			{
+				mensaje="No se ha podido realizar la reservación por falta de disponibilidad de los servicios o habitaciones solicitadas en la fecha indicada";
+				error = true;
+			}
+		
+			// Generación de la cadena de caracteres con la traza de la ejecución de la demo
+			String resultado = "Demo de creación de reserva para una Convencion";
+			resultado += "\n\n************ Generando datos de prueba ************ \n";
+			if (error)
+			{
+				resultado += mensaje;
+				
+			}
+			for(int i=0;i<lista.size();i++)
+			{
+			ReservacionHotel actual=lista.get(i);				
+			resultado += "Adicionado la reserva con id : " + actual.getId() + "\n";
+			}
+			panelDatos.actualizarInterfaz(resultado);
+		} 
+    	catch (Exception e) 
+    	{
+//			e.printStackTrace();
+			String resultado = generarMensajeError(e);
+			panelDatos.actualizarInterfaz(resultado);
+		}
+    }
 //
 //	/* ****************************************************************
 //	 * 			Demos de Bebida
@@ -1722,118 +1997,118 @@
 //        }
 //        return resp;
 //	}
-//
-//    /**
-//     * Genera una cadena de caracteres con la descripción de la excepcion e, haciendo énfasis en las excepcionsde JDO
-//     * @param e - La excepción recibida
-//     * @return La descripción de la excepción, cuando es javax.jdo.JDODataStoreException, "" de lo contrario
-//     */
-//	private String darDetalleException(Exception e) 
-//	{
-//		String resp = "";
-//		if (e.getClass().getName().equals("javax.jdo.JDODataStoreException"))
-//		{
-//			JDODataStoreException je = (javax.jdo.JDODataStoreException) e;
-//			return je.getNestedExceptions() [0].getMessage();
-//		}
-//		return resp;
-//	}
-//
-//	/**
-//	 * Genera una cadena para indicar al usuario que hubo un error en la aplicación
-//	 * @param e - La excepción generada
-//	 * @return La cadena con la información de la excepción y detalles adicionales
-//	 */
-//	private String generarMensajeError(Exception e) 
-//	{
-//		String resultado = "************ Error en la ejecución\n";
-//		resultado += e.getLocalizedMessage() + ", " + darDetalleException(e);
-//		resultado += "\n\nRevise datanucleus.log y parranderos.log para más detalles";
-//		return resultado;
-//	}
-//
-//	/**
-//	 * Limpia el contenido de un archivo dado su nombre
-//	 * @param nombreArchivo - El nombre del archivo que se quiere borrar
-//	 * @return true si se pudo limpiar
-//	 */
-//	private boolean limpiarArchivo(String nombreArchivo) 
-//	{
-//		BufferedWriter bw;
-//		try 
-//		{
-//			bw = new BufferedWriter(new FileWriter(new File (nombreArchivo)));
-//			bw.write ("");
-//			bw.close ();
-//			return true;
-//		} 
-//		catch (IOException e) 
-//		{
-////			e.printStackTrace();
-//			return false;
-//		}
-//	}
-//
-//	/**
-//	 * Abre el archivo dado como parámetro con la aplicación por defecto del sistema
-//	 * @param nombreArchivo - El nombre del archivo que se quiere mostrar
-//	 */
-//	private void mostrarArchivo (String nombreArchivo)
-//	{
-//		try
-//		{
-//			Desktop.getDesktop().open(new File(nombreArchivo));
-//		}
-//		catch (IOException e)
-//		{
-//			// TODO Auto-generated catch block
+
+    /**
+     * Genera una cadena de caracteres con la descripción de la excepcion e, haciendo énfasis en las excepcionsde JDO
+     * @param e - La excepción recibida
+     * @return La descripción de la excepción, cuando es javax.jdo.JDODataStoreException, "" de lo contrario
+     */
+	private String darDetalleException(Exception e) 
+	{
+		String resp = "";
+		if (e.getClass().getName().equals("javax.jdo.JDODataStoreException"))
+		{
+			JDODataStoreException je = (javax.jdo.JDODataStoreException) e;
+			return je.getNestedExceptions() [0].getMessage();
+		}
+		return resp;
+	}
+
+	/**
+	 * Genera una cadena para indicar al usuario que hubo un error en la aplicación
+	 * @param e - La excepción generada
+	 * @return La cadena con la información de la excepción y detalles adicionales
+	 */
+	private String generarMensajeError(Exception e) 
+	{
+		String resultado = "************ Error en la ejecución\n";
+		resultado += e.getLocalizedMessage() + ", " + darDetalleException(e);
+		resultado += "\n\nRevise datanucleus.log y parranderos.log para más detalles";
+		return resultado;
+	}
+
+	/**
+	 * Limpia el contenido de un archivo dado su nombre
+	 * @param nombreArchivo - El nombre del archivo que se quiere borrar
+	 * @return true si se pudo limpiar
+	 */
+	private boolean limpiarArchivo(String nombreArchivo) 
+	{
+		BufferedWriter bw;
+		try 
+		{
+			bw = new BufferedWriter(new FileWriter(new File (nombreArchivo)));
+			bw.write ("");
+			bw.close ();
+			return true;
+		} 
+		catch (IOException e) 
+		{
 //			e.printStackTrace();
-//		}
-//	}
-//
-//	/* ****************************************************************
-//	 * 			Métodos de la Interacción
-//	 *****************************************************************/
-//    /**
-//     * Método para la ejecución de los eventos que enlazan el menú con los métodos de negocio
-//     * Invoca al método correspondiente según el evento recibido
-//     * @param pEvento - El evento del usuario
-//     */
-//    @Override
-//	public void actionPerformed(ActionEvent pEvento)
-//	{
-//		String evento = pEvento.getActionCommand( );		
-//        try 
-//        {
-//			Method req = InterfazHotelAndesDemo.class.getMethod ( evento );			
-//			req.invoke ( this );
-//		} 
-//        catch (Exception e) 
-//        {
-//			e.printStackTrace();
-//		} 
-//	}
-//    
-//	/* ****************************************************************
-//	 * 			Programa principal
-//	 *****************************************************************/
-//    /**
-//     * Este método ejecuta la aplicación, creando una nueva interfaz
-//     * @param args Arreglo de argumentos que se recibe por línea de comandos
-//     */
-//    public static void main( String[] args )
-//    {
-//        try
-//        {
-//        	
-//            // Unifica la interfaz para Mac y para Windows.
-//            UIManager.setLookAndFeel( UIManager.getCrossPlatformLookAndFeelClassName( ) );
-//            InterfazHotelAndesDemo interfaz = new InterfazHotelAndesDemo( );
-//            interfaz.setVisible( true );
-//        }
-//        catch( Exception e )
-//        {
-//            e.printStackTrace( );
-//        }
-//    }
-//}
+			return false;
+		}
+	}
+
+	/**
+	 * Abre el archivo dado como parámetro con la aplicación por defecto del sistema
+	 * @param nombreArchivo - El nombre del archivo que se quiere mostrar
+	 */
+	private void mostrarArchivo (String nombreArchivo)
+	{
+		try
+		{
+			Desktop.getDesktop().open(new File(nombreArchivo));
+		}
+		catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	/* ****************************************************************
+	 * 			Métodos de la Interacción
+	 *****************************************************************/
+    /**
+     * Método para la ejecución de los eventos que enlazan el menú con los métodos de negocio
+     * Invoca al método correspondiente según el evento recibido
+     * @param pEvento - El evento del usuario
+     */
+    @Override
+	public void actionPerformed(ActionEvent pEvento)
+	{
+		String evento = pEvento.getActionCommand( );		
+        try 
+        {
+			Method req = InterfazHotelAndesDemo.class.getMethod ( evento );			
+			req.invoke ( this );
+		} 
+        catch (Exception e) 
+        {
+			e.printStackTrace();
+		} 
+	}
+    
+	/* ****************************************************************
+	 * 			Programa principal
+	 *****************************************************************/
+    /**
+     * Este método ejecuta la aplicación, creando una nueva interfaz
+     * @param args Arreglo de argumentos que se recibe por línea de comandos
+     */
+    public static void main( String[] args )
+    {
+        try
+        {
+        	
+            // Unifica la interfaz para Mac y para Windows.
+            UIManager.setLookAndFeel( UIManager.getCrossPlatformLookAndFeelClassName( ) );
+            InterfazHotelAndesDemo interfaz = new InterfazHotelAndesDemo( );
+            interfaz.setVisible( true );
+        }
+        catch( Exception e )
+        {
+            e.printStackTrace( );
+        }
+    }
+}
